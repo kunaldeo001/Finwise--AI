@@ -90,11 +90,11 @@ export const budgets = [
 ];
 
 export const monthlyExpenses = [
-  { name: 'Groceries', value: 400, fill: 'var(--color-chart-1)' },
-  { name: 'Utilities', value: 150, fill: 'var(--color-chart-2)' },
-  { name: 'Transport', value: 100, fill: 'var(--color-chart-3)' },
-  { name: 'Entertainment', value: 250, fill: 'var(--color-chart-4)' },
-  { name: 'Other', value: 200, fill: 'var(--color-chart-5)' },
+  { name: 'Groceries', value: 400, fill: 'hsl(var(--chart-1))' },
+  { name: 'Utilities', value: 150, fill: 'hsl(var(--chart-2))' },
+  { name: 'Transport', value: 100, fill: 'hsl(var(--chart-3))' },
+  { name: 'Entertainment', value: 250, fill: 'hsl(var(--chart-4))' },
+  { name: 'Other', value: 200, fill: 'hsl(var(--chart-5))' },
 ];
 
 export const yearlyExpenses = [
