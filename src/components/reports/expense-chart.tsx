@@ -23,28 +23,26 @@ type ExpenseChartProps = {
   data: any[];
 };
 
-const chartConfig: ChartConfig = {
-  expenses: {
-    label: 'Expenses',
-  },
-  value: {
-    label: 'Value',
-  },
-};
-
-monthlyExpenses.forEach((item) => {
-    chartConfig[item.name] = {
-        label: item.name,
-        color: item.fill,
-    }
-});
-
-function monthlyExpenses(data: any[]): any[] {
-    throw new Error('Function not implemented.');
-}
-
-
 export function ExpenseChart({ type, data }: ExpenseChartProps) {
+  const chartConfig: ChartConfig = {
+    expenses: {
+      label: 'Expenses',
+    },
+    value: {
+      label: 'Value',
+    },
+  };
+
+  data.forEach((item) => {
+    if (item.name) {
+      chartConfig[item.name] = {
+          label: item.name,
+          color: item.fill,
+      }
+    }
+  });
+
+
   if (type === 'bar') {
     return (
       <ChartContainer config={chartConfig} className="h-[300px] w-full">
