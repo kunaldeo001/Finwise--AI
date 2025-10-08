@@ -43,7 +43,7 @@ export function Portfolio() {
                   <div className="font-medium">{item.name}</div>
                   <div className="text-sm text-muted-foreground">{item.symbol}</div>
                 </TableCell>
-                <TableCell className="text-right">${item.price.toFixed(2)}</TableCell>
+                <TableCell className="text-right">₹{item.price.toLocaleString('en-IN')}</TableCell>
                 <TableCell
                   className={cn(
                     "text-right flex items-center justify-end gap-1",
@@ -53,7 +53,7 @@ export function Portfolio() {
                   {item.change > 0 ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
                   {item.change.toFixed(2)}
                 </TableCell>
-                <TableCell className="text-right">${item.value.toFixed(2)}</TableCell>
+                <TableCell className="text-right">₹{item.value.toLocaleString('en-IN')}</TableCell>
               </TableRow>
             ))}
           </TableBody>

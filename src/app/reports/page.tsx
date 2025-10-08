@@ -28,7 +28,7 @@ export default function ReportsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ExpenseChart type="bar" data={monthlyExpenses} />
+                <ExpenseChart type="bar" data={monthlyExpenses} dataKey="value" categoryKey="name" />
               </CardContent>
             </Card>
             <Card className="lg:col-span-2">
@@ -39,7 +39,7 @@ export default function ReportsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ExpenseChart type="pie" data={monthlyExpenses} />
+                <ExpenseChart type="pie" data={monthlyExpenses} dataKey="value" categoryKey="name" />
               </CardContent>
             </Card>
           </div>
@@ -53,7 +53,7 @@ export default function ReportsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ExpenseChart type="line" data={yearlyExpenses} />
+              <ExpenseChart type="line" data={yearlyExpenses} dataKey="expenses" categoryKey="month" />
             </CardContent>
           </Card>
         </TabsContent>

@@ -21,27 +21,22 @@ import { ChartConfig, ChartContainer, ChartTooltipContent } from '@/components/u
 type ExpenseChartProps = {
   type: 'bar' | 'pie' | 'line';
   data: any[];
+  dataKey: string;
+  categoryKey: string;
 };
 
-export function ExpenseChart({ type, data }: ExpenseChartProps) {
-  const chartConfig: ChartConfig = {
-    expenses: {
-      label: 'Expenses',
-    },
-    value: {
-      label: 'Value',
-    },
-  };
+export function ExpenseChart({ type, data, dataKey, categoryKey }: ExpenseChartProps) {
+  const chartConfig: ChartConfig = {};
 
   data.forEach((item) => {
-    if (item.name) {
-      chartConfig[item.name] = {
-          label: item.name,
+    const name = item[categoryKey];
+    if (name) {
+      chartConfig[name] = {
+          label: name,
           color: item.fill,
       }
     }
   });
-
 
   if (type === 'bar') {
     return (
@@ -50,18 +45,18 @@ export function ExpenseChart({ type, data }: ExpenseChartProps) {
           <BarChart data={data} layout="vertical" margin={{ left: 10, right: 20 }}>
             <CartesianGrid horizontal={false} />
             <YAxis
-              dataKey="name"
+              dataKey={categoryKey}
               type="category"
               tickLine={false}
               axisLine={false}
               tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }}
               width={80}
             />
-            <XAxis dataKey="value" type="number" hide />
+            <XAxis dataKey={dataKey} type="number" hide />
             <Tooltip cursor={{ fill: 'hsl(var(--muted))' }} content={<ChartTooltipContent />} />
-            <Bar dataKey="value" radius={5}>
+            <Bar dataKey={dataKey} radius={5}>
                 {data.map((entry) => (
-                    <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                    <Cell key={`cell-${entry[categoryKey]}`} fill={entry.fill} />
                 ))}
             </Bar>
           </BarChart>
@@ -76,9 +71,9 @@ export function ExpenseChart({ type, data }: ExpenseChartProps) {
         <ResponsiveContainer>
           <PieChart>
             <Tooltip content={<ChartTooltipContent />} />
-            <Pie data={data} dataKey="value" nameKey="name" innerRadius={60} label>
+            <Pie data={data} dataKey={dataKey} nameKey={categoryKey} innerRadius={60} label>
               {data.map((entry) => (
-                <Cell key={`cell-${entry.name}`} fill={entry.fill} />
+                <Cell key={`cell-${entry[categoryKey]}`} fill={entry.fill} />
               ))}
             </Pie>
              <Legend
@@ -107,10 +102,10 @@ export function ExpenseChart({ type, data }: ExpenseChartProps) {
         <ResponsiveContainer>
           <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
-            <YAxis tickFormatter={(value) => `$${value}`} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
+            <XAxis dataKey={categoryKey} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
+            <YAxis tickFormatter={(value) => `₹${value}`} tick={{ fill: 'hsl(var(--foreground))', fontSize: 12 }} />
             <Tooltip content={<ChartTooltipContent />} />
-            <Line type="monotone" dataKey="expenses" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: 'hsl(var(--primary))' }} />
+            <Line type="monotone" dataKey={dataKey} stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4, fill: 'hsl(var(--primary))' }} />
           </LineChart>
         </ResponsiveContainer>
       </ChartContainer>

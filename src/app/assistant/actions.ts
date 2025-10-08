@@ -1,24 +1,26 @@
-
 'use server';
 
 import {
-  personalizedFinancialNewsFeed,
-  PersonalizedFinancialNewsFeedOutput,
-} from '@/ai/flows/personalized-financial-news-feed';
+  financialChatbot,
+  FinancialChatbotOutput,
+} from '@/ai/ai-powered-financial-chatbot';
 import { z } from 'zod';
 
 const schema = z.object({
-  interests: z.string().min(3, 'Interests must be at least 3 characters.'),
-  investmentPortfolio: z.string().min(2, 'Portfolio must have at least one stock.'),
+  query: z.string().min(1, 'Query is required.'),
+  // These are hardcoded for now, but could be dynamic in a real app
+  userData: z.string(),
+  marketTrends: z.string(),
 });
 
-type FormState = {
+export type FormState = {
   success: boolean;
   message: string;
-  data: PersonalizedFinancialNewsFeedOutput | null;
+  response: FinancialChatbotOutput['advice'] | null;
+  query: string;
 };
 
-export async function generateNewsFeed(
+export async function generateChatResponse(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
@@ -26,39 +28,28 @@ export async function generateNewsFeed(
 
   if (!validatedFields.success) {
     return {
+      ...prevState,
       success: false,
-      message: 'Invalid form data. Please provide both interests and portfolio items.',
-      data: null,
+      message: 'Invalid form data. Please provide a query.',
+      response: null,
     };
   }
 
   try {
-    const result = await personalizedFinancialNewsFeed(validatedFields.data);
-    // Add a dummy URL if not provided by the AI
-    const newsFeedWithUrls = result.newsFeed.map(item => ({
-      ...item,
-      url: item.url || '#',
-    }));
-
+    const result = await financialChatbot(validatedFields.data);
     return {
       success: true,
-      message: 'News feed generated successfully.',
-      data: { newsFeed: newsFeedWithUrls },
+      message: 'Response generated successfully.',
+      response: result.advice,
+      query: validatedFields.data.query,
     };
   } catch (error) {
     console.error(error);
-    // For demonstration, return dummy data on failure
-    const dummyData = {
-        newsFeed: [
-            { title: 'Market Hits All-Time High', summary: 'Major indices soared today driven by tech stocks.', url: '#', relevanceScore: 0.9 },
-            { title: 'Federal Reserve to Announce Rate Decision', summary: 'All eyes are on the Fed as they conclude their two-day meeting.', url: '#', relevanceScore: 0.8 },
-            { title: 'Understanding Your 401(k)', summary: 'A deep dive into maximizing your retirement savings.', url: '#', relevanceScore: 0.7 },
-        ]
-    };
     return {
-      success: true,
-      message: 'Could not fetch live data. Showing sample news.',
-      data: dummyData
+      ...prevState,
+      success: false,
+      message: 'Failed to get a response from the AI. Please try again.',
+      response: null,
     };
   }
 }

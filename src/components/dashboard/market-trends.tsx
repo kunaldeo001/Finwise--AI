@@ -14,11 +14,11 @@ import { marketTrendsData } from '@/lib/placeholder-data';
 const chartConfig = {
   SP500: {
     label: "S&P 500",
-    color: "hsl(var(--primary))",
+    color: "hsl(var(--chart-1))",
   },
   Nasdaq: {
     label: "Nasdaq",
-    color: "hsl(var(--accent))",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
@@ -44,7 +44,7 @@ export function MarketTrends() {
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(value) => `$${value/1000}k`}/>
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickFormatter={(value) => `₹${value/1000}k`}/>
                 <Tooltip
                   content={<ChartTooltipContent indicator="dot" />}
                   cursor={{

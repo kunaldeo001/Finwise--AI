@@ -61,11 +61,11 @@ export function GoalForm() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="currentSavings">Current Savings ($)</Label>
+                <Label htmlFor="currentSavings">Current Savings (₹)</Label>
                 <Input id="currentSavings" name="currentSavings" type="number" placeholder="5000" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="monthlyContribution">Monthly Contribution ($)</Label>
+                <Label htmlFor="monthlyContribution">Monthly Contribution (₹)</Label>
                 <Input id="monthlyContribution" name="monthlyContribution" type="number" placeholder="500" required />
               </div>
             </div>
@@ -106,7 +106,7 @@ export function GoalForm() {
           <CardContent className="space-y-4 text-sm">
             <div className="flex justify-between border-b pb-2">
               <span className="text-muted-foreground">Est. Savings Required</span>
-              <span className="font-semibold">${state.data.estimatedSavingsRequired.toLocaleString()}</span>
+              <span className="font-semibold">₹{state.data.estimatedSavingsRequired.toLocaleString('en-IN')}</span>
             </div>
             <div className="flex justify-between border-b pb-2">
               <span className="text-muted-foreground">Est. Time to Goal</span>

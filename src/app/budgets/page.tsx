@@ -36,8 +36,8 @@ export default function BudgetsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold">${budget.spent.toLocaleString()}</span>
-                    <span className="text-sm text-muted-foreground">/ ${budget.limit.toLocaleString()}</span>
+                    <span className="text-2xl font-bold">₹{budget.spent.toLocaleString('en-IN')}</span>
+                    <span className="text-sm text-muted-foreground">/ ₹{budget.limit.toLocaleString('en-IN')}</span>
                 </div>
                 <Progress
                   value={progress}
@@ -46,7 +46,7 @@ export default function BudgetsPage() {
               </CardContent>
               <CardFooter>
                 <p className={cn("text-sm", remaining < 0 ? "text-destructive" : "text-muted-foreground")}>
-                  {remaining >= 0 ? `$${remaining.toLocaleString()} remaining` : `$${Math.abs(remaining).toLocaleString()} over budget`}
+                  {remaining >= 0 ? `₹${remaining.toLocaleString('en-IN')} remaining` : `₹${Math.abs(remaining).toLocaleString('en-IN')} over budget`}
                 </p>
               </CardFooter>
             </Card>
