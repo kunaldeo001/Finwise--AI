@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { generateGoalSuggestion } from '@/app/goals/actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Loader2, Zap } from 'lucide-react';
-import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState = {
@@ -33,7 +33,7 @@ function SubmitButton() {
 }
 
 export function GoalForm() {
-  const [state, formAction] = useFormState(generateGoalSuggestion, initialState);
+  const [state, formAction] = useActionState(generateGoalSuggestion, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
