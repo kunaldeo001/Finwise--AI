@@ -36,8 +36,8 @@ export function AppSidebar() {
               tooltip={{
                 children: (
                   <div className="p-2">
-                    <div className="font-semibold">John Doe</div>
-                    <div className="text-xs text-muted-foreground">john.doe@example.com</div>
+                    <div className="font-semibold">Kunal Deo</div>
+                    <div className="text-xs text-muted-foreground">kunal.deo@example.com</div>
                   </div>
                 ),
                 className: 'w-max',
@@ -56,7 +56,7 @@ export function AppSidebar() {
                     <CircleUser />
                   </AvatarFallback>
                 </Avatar>
-                <span>John Doe</span>
+                <span>Kunal Deo</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
