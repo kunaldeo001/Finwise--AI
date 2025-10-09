@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
+import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
   title: 'FinWise AI',
@@ -26,14 +27,16 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased', 'min-h-screen bg-background font-sans')}>
-        <SidebarProvider>
-          <div className="relative flex min-h-screen">
-            <AppSidebar />
-            <SidebarInset className="w-full">
-              <div className="p-4 sm:p-6 lg:p-8">{children}</div>
-            </SidebarInset>
-          </div>
-        </SidebarProvider>
+        <FirebaseClientProvider>
+          <SidebarProvider>
+            <div className="relative flex min-h-screen">
+              <AppSidebar />
+              <SidebarInset className="w-full">
+                <div className="p-4 sm:p-6 lg:p-8">{children}</div>
+              </SidebarInset>
+            </div>
+          </SidebarProvider>
+        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
