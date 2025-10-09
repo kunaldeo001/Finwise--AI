@@ -48,7 +48,8 @@ export function LoginForm() {
   });
 
   useEffect(() => {
-    if (user && !isUserLoading) {
+    const error = searchParams.get('error');
+    if (user && !isUserLoading && !error) {
       const from = searchParams.get('from');
       router.replace(from || '/');
     }
