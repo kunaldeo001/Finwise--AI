@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, ScanLine, Upload } from 'lucide-react';
+import { Loader2, ScanLine, Upload, Files } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
 
@@ -110,8 +110,8 @@ export function ScanBill() {
                   <Image src={preview} alt="Receipt preview" fill className="object-contain rounded-lg" />
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                    <Upload className="size-8" />
-                    <span>Click to upload a bill</span>
+                    <Files className="size-8" />
+                    <span>Upload from gallery or files</span>
                   </div>
                 )}
               </div>
