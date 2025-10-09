@@ -1,0 +1,466 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the FinWise AI application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
+        "registrationDate": {
+          "type": "string",
+          "description": "Date and time the user registered.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "registrationDate"
+      ]
+    },
+    "InvestmentPortfolio": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "InvestmentPortfolio",
+      "type": "object",
+      "description": "Represents a user's investment portfolio.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the InvestmentPortfolio entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N InvestmentPortfolio)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the investment portfolio."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the investment portfolio."
+        },
+        "creationDate": {
+          "type": "string",
+          "description": "Date and time the portfolio was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "name",
+        "description",
+        "creationDate"
+      ]
+    },
+    "Stock": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Stock",
+      "type": "object",
+      "description": "Represents a stock in the stock market.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Stock entity."
+        },
+        "tickerSymbol": {
+          "type": "string",
+          "description": "The ticker symbol of the stock (e.g., AAPL, GOOG)."
+        },
+        "companyName": {
+          "type": "string",
+          "description": "The name of the company."
+        },
+        "currentPrice": {
+          "type": "number",
+          "description": "The current price of the stock."
+        }
+      },
+      "required": [
+        "id",
+        "tickerSymbol",
+        "companyName",
+        "currentPrice"
+      ]
+    },
+    "PortfolioStock": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PortfolioStock",
+      "type": "object",
+      "description": "Represents the stocks held in a user's portfolio and their respective quantities.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the PortfolioStock entity."
+        },
+        "portfolioId": {
+          "type": "string",
+          "description": "Reference to InvestmentPortfolio. (Relationship: InvestmentPortfolio 1:N PortfolioStock)"
+        },
+        "stockId": {
+          "type": "string",
+          "description": "Reference to Stock. (Relationship: Stock 1:N PortfolioStock)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The number of shares of the stock held in the portfolio."
+        },
+        "purchaseDate": {
+          "type": "string",
+          "description": "Date and time the stock was purchased.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "portfolioId",
+        "stockId",
+        "quantity",
+        "purchaseDate"
+      ]
+    },
+    "Expense": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Expense",
+      "type": "object",
+      "description": "Represents an expense record.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Expense entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Expense)"
+        },
+        "date": {
+          "type": "string",
+          "description": "Date of the expense.",
+          "format": "date-time"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount of the expense."
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the expense (e.g., Groceries, Rent, Entertainment)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the expense."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "date",
+        "amount",
+        "category",
+        "description"
+      ]
+    },
+    "FinancialGoal": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FinancialGoal",
+      "type": "object",
+      "description": "Represents a user's financial goal.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the FinancialGoal entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N FinancialGoal)"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the financial goal (e.g., Retirement, Down Payment)."
+        },
+        "targetAmount": {
+          "type": "number",
+          "description": "The target amount for the financial goal."
+        },
+        "targetDate": {
+          "type": "string",
+          "description": "The target date for achieving the financial goal.",
+          "format": "date-time"
+        },
+        "currentProgress": {
+          "type": "number",
+          "description": "The current progress towards the financial goal."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "name",
+        "targetAmount",
+        "targetDate",
+        "currentProgress"
+      ]
+    },
+    "NewsArticle": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "NewsArticle",
+      "type": "object",
+      "description": "Represents a financial news article.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the NewsArticle entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the news article."
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of the news article.",
+          "format": "uri"
+        },
+        "publicationDate": {
+          "type": "string",
+          "description": "Date the article was published.",
+          "format": "date-time"
+        },
+        "summary": {
+          "type": "string",
+          "description": "A brief summary of the article's content."
+        },
+        "keywords": {
+          "type": "array",
+          "description": "Keywords associated with the news article.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "url",
+        "publicationDate",
+        "summary"
+      ]
+    },
+    "UserNewsPreference": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserNewsPreference",
+      "type": "object",
+      "description": "Represents a user's preferences for financial news.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserNewsPreference entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N UserNewsPreference)"
+        },
+        "keywords": {
+          "type": "array",
+          "description": "List of keywords the user is interested in for news articles.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sourcePreferences": {
+          "type": "array",
+          "description": "Preferred news sources for the user.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "userId"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles.  Access is restricted to the user themselves.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/investmentPortfolios/{investmentPortfolioId}",
+        "definition": {
+          "entityName": "InvestmentPortfolio",
+          "schema": {
+            "$ref": "#/backend/entities/InvestmentPortfolio"
+          },
+          "description": "Stores investment portfolios owned by a user. Path-based rules ensure only the user can access their portfolios.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            },
+            {
+              "name": "investmentPortfolioId",
+              "description": "The unique ID of the investment portfolio."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/stocks/{stockId}",
+        "definition": {
+          "entityName": "Stock",
+          "schema": {
+            "$ref": "#/backend/entities/Stock"
+          },
+          "description": "Stores stock market data. Publicly accessible, but write access is restricted.",
+          "params": [
+            {
+              "name": "stockId",
+              "description": "The unique ID of the stock."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/investmentPortfolios/{investmentPortfolioId}/portfolioStocks/{portfolioStockId}",
+        "definition": {
+          "entityName": "PortfolioStock",
+          "schema": {
+            "$ref": "#/backend/entities/PortfolioStock"
+          },
+          "description": "Stores the stocks within a user's portfolio. Access is restricted to the user based on the parent `investmentPortfolioId`.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            },
+            {
+              "name": "investmentPortfolioId",
+              "description": "The unique ID of the investment portfolio."
+            },
+            {
+              "name": "portfolioStockId",
+              "description": "The unique ID of the portfolio stock."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/expenses/{expenseId}",
+        "definition": {
+          "entityName": "Expense",
+          "schema": {
+            "$ref": "#/backend/entities/Expense"
+          },
+          "description": "Stores user expenses. Path-based rules ensure only the user can access their expenses.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            },
+            {
+              "name": "expenseId",
+              "description": "The unique ID of the expense."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/financialGoals/{financialGoalId}",
+        "definition": {
+          "entityName": "FinancialGoal",
+          "schema": {
+            "$ref": "#/backend/entities/FinancialGoal"
+          },
+          "description": "Stores user financial goals. Path-based rules ensure only the user can access their financial goals.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            },
+            {
+              "name": "financialGoalId",
+              "description": "The unique ID of the financial goal."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/newsArticles/{newsArticleId}",
+        "definition": {
+          "entityName": "NewsArticle",
+          "schema": {
+            "$ref": "#/backend/entities/NewsArticle"
+          },
+          "description": "Stores financial news articles. Publicly accessible, but write access is restricted.",
+          "params": [
+            {
+              "name": "newsArticleId",
+              "description": "The unique ID of the news article."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/newsPreferences/{newsPreferenceId}",
+        "definition": {
+          "entityName": "UserNewsPreference",
+          "schema": {
+            "$ref": "#/backend/entities/UserNewsPreference"
+          },
+          "description": "Stores user news preferences. Path-based rules ensure only the user can access their news preferences.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user."
+            },
+            {
+              "name": "newsPreferenceId",
+              "description": "The unique ID of the news preference."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to ensure Authorization Independence, DBAC, and support secure list operations (QAPs). User-owned data is stored under `/users/{userId}` to leverage path-based security. Denormalization is used to avoid `get()` calls in security rules. Specifically, any data requiring authorization based on user membership or ownership denormalizes the relevant authorization data into the document itself.\n\n*   `/users/{userId}`: Stores user profiles. Access is restricted to the user themselves.\n*   `/users/{userId}/investmentPortfolios/{investmentPortfolioId}`: Stores investment portfolios owned by a user. Path-based rules ensure only the user can access their portfolios.\n*   `/stocks/{stockId}`: Stores stock market data. Publicly accessible, but write access is restricted.\n*   `/users/{userId}/investmentPortfolios/{investmentPortfolioId}/portfolioStocks/{portfolioStockId}`: Stores the stocks within a user's portfolio.  Access is restricted to the user based on the parent `investmentPortfolioId`.\n*   `/users/{userId}/expenses/{expenseId}`: Stores user expenses. Path-based rules ensure only the user can access their expenses.\n*   `/users/{userId}/financialGoals/{financialGoalId}`: Stores user financial goals.  Path-based rules ensure only the user can access their financial goals.\n*   `/newsArticles/{newsArticleId}`: Stores financial news articles. Publicly accessible, but write access is restricted.\n*   `/users/{userId}/newsPreferences/{newsPreferenceId}`: Stores user news preferences. Path-based rules ensure only the user can access their news preferences.\n\nThis structure ensures that security rules can be written without relying on `get()` calls, improving performance and security.  QAPs are supported via structural segregation, with user-specific data under `/users/{userId}` and public data in top-level collections."
+  }
+}
