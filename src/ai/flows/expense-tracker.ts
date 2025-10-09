@@ -11,7 +11,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import {googleAI} from '@genkit-ai/google-genai';
+import {googleAI} from '@genkit-ai/googleai';
 
 const ExpenseTrackerInputSchema = z.object({
   receipt: z
