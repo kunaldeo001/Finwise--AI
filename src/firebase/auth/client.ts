@@ -8,12 +8,19 @@ import {
   signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  type Auth,
 } from 'firebase/auth';
 
-const { auth } = initializeFirebase();
-const googleProvider = new GoogleAuthProvider();
+// This function will be used to get the auth instance.
+// It ensures that Firebase is initialized before we get the auth instance.
+function getFirebaseAuth(): Auth {
+  const { auth } = initializeFirebase();
+  return auth;
+}
 
 export async function signInWithGoogle() {
+  const auth = getFirebaseAuth();
+  const googleProvider = new GoogleAuthProvider();
   try {
     await signInWithPopup(auth, googleProvider);
   } catch (error) {
@@ -26,6 +33,7 @@ export async function signInWithGoogle() {
 }
 
 export async function handleSignOut() {
+  const auth = getFirebaseAuth();
   try {
     await signOut(auth);
   } catch (error) {
@@ -34,6 +42,7 @@ export async function handleSignOut() {
 }
 
 export async function handleEmailSignUp(email: string, password: string): Promise<void> {
+  const auth = getFirebaseAuth();
   try {
     await createUserWithEmailAndPassword(auth, email, password);
   } catch (error: any) {
@@ -43,6 +52,7 @@ export async function handleEmailSignUp(email: string, password: string): Promis
 }
 
 export async function handleEmailSignIn(email: string, password: string): Promise<void> {
+  const auth = getFirebaseAuth();
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error: any) {
