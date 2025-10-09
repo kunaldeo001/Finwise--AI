@@ -11,6 +11,7 @@ import {
   Goal,
   Bot,
   Settings,
+  Receipt,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -25,6 +26,7 @@ const menuItems: SidebarNavItem[] = [
   { href: '/budgets', label: 'Budgets', icon: Wallet },
   { href: '/reports', label: 'Reports', icon: LineChart },
   { href: '/goals', label: 'Goals', icon: Goal },
+  { href: '/expenses', label: 'Expenses', icon: Receipt },
   { href: '/assistant', label: 'AI Assistant', icon: Bot },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];

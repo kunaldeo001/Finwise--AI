@@ -111,3 +111,11 @@ export const yearlyExpenses = [
     { month: 'Nov', expenses: 3200 },
     { month: 'Dec', expenses: 3500 },
 ];
+
+export const recentExpenses = [
+  { name: 'Groceries', value: 550, fill: 'hsl(var(--chart-1))' },
+  { name: 'Utilities', value: 200, fill: 'hsl(var(--chart-2))' },
+  { name: 'Transport', value: 120, fill: 'hsl(var(--chart-3))' },
+  { name: 'Dining', value: 300, fill: 'hsl(var(--chart-4))' },
+  { name: 'Shopping', value: 400, fill: 'hsl(var(--chart-5))' },
+];
