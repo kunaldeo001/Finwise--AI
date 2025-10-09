@@ -11,6 +11,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 
 const ExpenseTrackerInputSchema = z.object({
   receipt: z
@@ -44,6 +45,7 @@ const prompt = ai.definePrompt({
   prompt: `You are an expert receipt processing agent. Extract the vendor, date, total amount, and line items from the provided receipt image. Also, categorize the expense based on the items.
 
 Receipt: {{media url=receipt}}`,
+  model: googleAI.model('gemini-1.5-flash-latest'),
 });
 
 const expenseTrackerFlow = ai.defineFlow(
