@@ -42,9 +42,18 @@ const prompt = ai.definePrompt({
   name: 'expenseTrackerPrompt',
   input: { schema: ExpenseTrackerInputSchema },
   output: { schema: ExpenseTrackerOutputSchema },
-  prompt: `You are an expert receipt processing agent. Extract the vendor, date, total amount, and line items from the provided receipt image. Also, categorize the expense based on the items.
+  prompt: `You are an expert receipt processing agent. Your task is to accurately extract information from the provided receipt image.
 
-Receipt: {{media url=receipt}}`,
+Analyze the image and extract the following details:
+1.  **Vendor Name**: Identify the name of the store or business.
+2.  **Transaction Date**: Find the date of the purchase and format it as YYYY-MM-DD.
+3.  **Total Amount**: Extract the final total amount paid.
+4.  **Line Items**: List each item purchased along with its price.
+5.  **Category**: Based on the vendor and items, classify the expense into one of these categories: Groceries, Dining, Transport, Shopping, Utilities, Other.
+
+Return the extracted information in the exact JSON format specified by the output schema.
+
+Receipt Image: {{media url=receipt}}`,
   model: googleAI.model('gemini-1.5-flash-latest'),
 });
 
