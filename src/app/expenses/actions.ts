@@ -3,6 +3,7 @@
 
 import {
   expenseTracker,
+  ExpenseTrackerInput,
   ExpenseTrackerOutput,
 } from '@/ai/flows/expense-tracker';
 import { z } from 'zod';
@@ -32,7 +33,7 @@ export async function processReceipt(
   }
 
   try {
-    const result = await expenseTracker(validatedFields.data);
+    const result = await expenseTracker(validatedFields.data as ExpenseTrackerInput);
     return {
       success: true,
       message: 'Receipt processed successfully.',
