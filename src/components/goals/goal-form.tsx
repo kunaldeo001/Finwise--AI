@@ -52,7 +52,7 @@ export function GoalForm() {
         <form action={formAction}>
           <CardHeader>
             <CardTitle>Define Your Goal</CardTitle>
-            <CardDescription>Tell us what you're aiming for, and our AI will create a plan.</CardDescription>
+            <CardDescription>Tell us what you&apos;re aiming for, and our AI will create a plan.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
@@ -101,7 +101,7 @@ export function GoalForm() {
         <Card className="bg-primary/5 border-primary/20 animate-fade-in">
           <CardHeader>
             <CardTitle className="text-primary">Your AI-Powered Goal Plan</CardTitle>
-            <CardDescription>Here's a personalized strategy to achieve your goal of {state.data.goal}.</CardDescription>
+            <CardDescription>Here&apos;s a personalized strategy to achieve your goal of {state.data.goal}.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div className="flex justify-between border-b pb-2">
