@@ -48,7 +48,7 @@ export function Chatbot() {
       id: 'welcome',
       sender: 'assistant',
       text: `Hello! I'm your FinWise Personal Finance Copilot 2.0. I maintain full context across our conversation and have access to your live financial snapshot (₹${finwise.totals.currentMonthExpenses.toLocaleString('en-IN')} expenses, ₹${finwise.totals.currentMonthIncome.toLocaleString('en-IN')} income, and active budgets). How can I assist you with your money today?`,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      timestamp: 'Just now',
       followUps: ['How much did I spend on food?', 'Can I afford a ₹50,000 laptop?', 'Where am I overspending?'],
     },
   ]);

@@ -80,7 +80,7 @@ export function FinancialTimeline() {
     budgetStatuses.filter((b) => b.isOverBudget).forEach((b) => {
       events.push({
         id: `tl-bgt-${b.budget.id}`,
-        date: new Date().toISOString().substring(0, 10),
+        date: '2026-09-20',
         title: `Budget Exceeded: ${b.budget.category}`,
         description: `Total spent ₹${b.spent.toLocaleString('en-IN')} exceeded the ₹${b.budget.limit.toLocaleString('en-IN')} limit.`,
         category: 'Budget',
@@ -96,7 +96,7 @@ export function FinancialTimeline() {
       if (pct >= 50) {
         events.push({
           id: `tl-goal-${g.id}`,
-          date: new Date().toISOString().substring(0, 10),
+          date: '2026-09-15',
           title: `Goal Milestone: ${g.name} (${pct}%)`,
           description: `Accumulated ₹${g.currentAmount.toLocaleString('en-IN')} towards your ₹${g.targetAmount.toLocaleString('en-IN')} target.`,
           category: 'Goal',

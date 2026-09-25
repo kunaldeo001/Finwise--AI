@@ -174,4 +174,36 @@ describe('Financial Intelligence Engine Tests', () => {
     expect(metrics.requiredMonthlySavings).toBeGreaterThan(behindGoal.monthlyContribution);
     expect(metrics.shortfallPerMonth).toBeGreaterThan(0);
   });
+
+  it('generateSpendingIntelligence computes previous month deterministically without timezone shift', () => {
+    const txs: Transaction[] = [
+      {
+        id: 'tx-sep',
+        userId: 'u1',
+        amount: 8400,
+        type: 'expense',
+        category: 'Food & Dining',
+        merchant: 'Restaurants',
+        date: '2026-09-10',
+        createdAt: '2026-09-10T00:00:00Z',
+      },
+      {
+        id: 'tx-aug',
+        userId: 'u1',
+        amount: 6800,
+        type: 'expense',
+        category: 'Food & Dining',
+        merchant: 'Groceries',
+        date: '2026-08-12',
+        createdAt: '2026-08-12T00:00:00Z',
+      },
+    ];
+
+    const result = generateSpendingIntelligence(txs, '2026-09');
+    const food = result.categoryComparisons.find((c) => c.category === 'Food & Dining');
+    expect(food).toBeDefined();
+    expect(food?.currentAmount).toBe(8400);
+    expect(food?.previousAmount).toBe(6800);
+    expect(food?.percentageChange).toBe(24);
+  });
 });

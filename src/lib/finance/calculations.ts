@@ -965,7 +965,7 @@ export function calculateSpendingVelocityAndProjections(
     const referenceDate = arg3 instanceof Date ? arg3 : new Date();
     const year = referenceDate.getFullYear();
     const month = referenceDate.getMonth();
-    const currentMonthStr = referenceDate.toISOString().substring(0, 7);
+    const currentMonthStr = `${year}-${String(month + 1).padStart(2, '0')}`;
 
     elapsedDays = Math.max(1, referenceDate.getDate());
     totalDaysInMonth = new Date(year, month + 1, 0).getDate();

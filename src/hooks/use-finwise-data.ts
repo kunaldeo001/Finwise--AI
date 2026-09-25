@@ -267,8 +267,9 @@ export function useFinwiseData() {
       monthlyIncome: totals.currentMonthIncome,
       monthlyExpense: totals.currentMonthExpenses,
       liquidSavings: totals.totalBalance,
+      currentMonthStr,
     });
-  }, [transactions, budgets, totals]);
+  }, [transactions, budgets, totals, currentMonthStr]);
 
   const isLoading = isUserLoading || txLoading || budgetsLoading || goalsLoading || investmentsLoading || debtsLoading;
 

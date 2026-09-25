@@ -205,7 +205,7 @@ export function MonthlyAIReport() {
               </Badge>
               <CardTitle className="text-2xl font-bold">Monthly Financial Intelligence Report</CardTitle>
               <CardDescription className="text-xs mt-1">
-                Generated for account: {finwise.user?.email || 'Guest User'} • Date: {new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}
+                Generated for account: {finwise.user?.email || 'Guest User'} • Period: {selectedMonth}
               </CardDescription>
             </div>
             <div className="text-right">

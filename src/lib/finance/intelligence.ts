@@ -212,10 +212,19 @@ export function generateSpendingIntelligence(
   previousMonthStr?: string
 ) {
   const now = new Date();
-  const currentMonth = currentMonthStr || now.toISOString().substring(0, 7);
+  const currentMonth =
+    currentMonthStr ||
+    `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-  const prevDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const previousMonth = previousMonthStr || prevDate.toISOString().substring(0, 7);
+  let previousMonth = previousMonthStr;
+  if (!previousMonth) {
+    const parts = currentMonth.split('-').map(Number);
+    const yr = parts[0] || now.getFullYear();
+    const mo = parts[1] || now.getMonth() + 1;
+    const prevYear = mo === 1 ? yr - 1 : yr;
+    const prevMo = mo === 1 ? 12 : mo - 1;
+    previousMonth = `${prevYear}-${String(prevMo).padStart(2, '0')}`;
+  }
 
   const currentExpenses = transactions.filter(
     (tx) => tx.type === 'expense' && tx.date.startsWith(currentMonth)
@@ -295,12 +304,22 @@ export function generateProactiveInsights(params: {
   monthlyIncome: number;
   monthlyExpense: number;
   liquidSavings: number;
+  currentMonthStr?: string;
+  previousMonthStr?: string;
 }): ProactiveInsight[] {
-  const { transactions, budgets, monthlyIncome, monthlyExpense, liquidSavings } = params;
+  const {
+    transactions,
+    budgets,
+    monthlyIncome,
+    monthlyExpense,
+    liquidSavings,
+    currentMonthStr,
+    previousMonthStr,
+  } = params;
   const insights: ProactiveInsight[] = [];
 
   // 1. Food / Top Category shift insight
-  const mom = generateSpendingIntelligence(transactions);
+  const mom = generateSpendingIntelligence(transactions, currentMonthStr, previousMonthStr);
   const foodComparison = mom.categoryComparisons.find((c) => c.category === 'Food & Dining');
   if (foodComparison && Math.abs(foodComparison.percentageChange) > 10) {
     insights.push({
