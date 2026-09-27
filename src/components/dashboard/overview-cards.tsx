@@ -122,12 +122,12 @@ export function OverviewCards() {
       </Card>
 
       {/* 5. Net Worth */}
-      <Card className="relative overflow-hidden shadow-xs border border-border/70 hover:border-blue-500/40 hover:shadow-md transition-all duration-200 group before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-blue-500">
+      <Card className="relative overflow-hidden shadow-xs border border-border/70 hover:border-emerald-500/40 hover:shadow-md transition-all duration-200 group before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-emerald-500">
         <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Net Worth
           </span>
-          <div className="size-6 rounded-md bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 group-hover:bg-blue-500/20 transition-colors">
+          <div className="size-6 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500/20 transition-colors">
             <Landmark className="size-3.5" />
           </div>
         </CardHeader>

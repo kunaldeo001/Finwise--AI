@@ -153,7 +153,7 @@ export function BudgetManager() {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="relative overflow-hidden shadow-xs border border-border/70 hover:border-blue-500/40 hover:shadow-md transition-all duration-200 before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-blue-500">
+        <Card className="relative overflow-hidden shadow-xs border border-border/70 hover:border-slate-500/40 hover:shadow-md transition-all duration-200 before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-slate-500">
           <CardHeader className="p-4 pb-1">
             <span className="text-[11px] text-muted-foreground font-semibold uppercase tracking-wider">Total Budgeted</span>
           </CardHeader>

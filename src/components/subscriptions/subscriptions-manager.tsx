@@ -129,13 +129,13 @@ export function SubscriptionsManager() {
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
-          <div className="h-0.5 w-full bg-blue-500/60" />
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-violet-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-violet-500/60" />
           <CardHeader className="p-4 pb-1">
             <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Active Mandates</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-blue-400 tabular-nums">
+            <div className="text-2xl font-bold text-violet-400 tabular-nums">
               {activeSubs.length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Detected streaming, SaaS, utilities</p>

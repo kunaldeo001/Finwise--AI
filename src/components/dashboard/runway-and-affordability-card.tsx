@@ -155,12 +155,12 @@ export function RunwayAndAffordabilityCard() {
       </Card>
 
       {/* Affordability & Mathematical Stress Testing */}
-      <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
-        <div className="h-0.5 w-full bg-blue-500/60" />
+      <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-teal-500/30 transition-all duration-200">
+        <div className="h-0.5 w-full bg-teal-500/60" />
         <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Calculator className="size-4 text-blue-400" />
+              <Calculator className="size-4 text-teal-400" />
               <CardTitle className="text-base font-semibold">Affordability & Stress Scenarios</CardTitle>
             </div>
             <CardDescription className="text-xs">

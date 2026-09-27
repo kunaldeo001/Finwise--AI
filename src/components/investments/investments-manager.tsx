@@ -314,8 +314,8 @@ export function InvestmentsManager() {
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
-          <div className="h-0.5 w-full bg-blue-500/60" />
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-emerald-500/60" />
           <CardHeader className="p-4 pb-1">
             <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Current Valuation</span>
           </CardHeader>

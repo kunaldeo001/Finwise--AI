@@ -40,7 +40,7 @@ export function CashFlowForecastCard({
 
   return (
     <Card className="relative overflow-hidden border border-border/70 hover:border-emerald-500/30 transition-all duration-200 shadow-sm">
-      <div className="h-0.5 w-full bg-gradient-to-r from-emerald-500/60 to-blue-500/60" />
+      <div className="h-0.5 w-full bg-emerald-500/60" />
       <CardHeader className="pb-3 border-b bg-muted/10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2.5">

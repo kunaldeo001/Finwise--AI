@@ -169,7 +169,7 @@ export function Chatbot() {
 
       {/* Main Chat Conversation Card */}
       <Card className="flex flex-col h-[650px] shadow-sm border border-border/80 overflow-hidden">
-        <CardHeader className="py-3 px-6 flex flex-row items-center justify-between border-b border-violet-500/20 bg-gradient-to-r from-violet-500/10 via-card to-blue-500/5">
+        <CardHeader className="py-3 px-6 flex flex-row items-center justify-between border-b border-violet-500/20 bg-gradient-to-r from-violet-500/10 via-card to-card">
           <div className="flex items-center gap-3">
             <div className="size-9 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 shadow-xs">
               <Bot className="size-5" />
