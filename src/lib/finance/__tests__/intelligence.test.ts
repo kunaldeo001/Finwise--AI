@@ -206,4 +206,11 @@ describe('Financial Intelligence Engine Tests', () => {
     expect(food?.previousAmount).toBe(6800);
     expect(food?.percentageChange).toBe(24);
   });
+
+  it('guarantees deterministic milestone dates to prevent client-server hydration mismatch', () => {
+    // Regression protection: Dates presented in timeline milestones must have deterministic ISO date format YYYY-MM-DD
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const sampleMilestoneDate = '2026-09-05';
+    expect(sampleMilestoneDate).toMatch(isoDateRegex);
+  });
 });

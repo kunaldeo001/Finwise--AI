@@ -111,7 +111,7 @@ export function FinancialTimeline() {
     debts.forEach((d) => {
       events.push({
         id: `tl-debt-${d.id}`,
-        date: new Date().toISOString().substring(0, 10),
+        date: '2026-09-05',
         title: `Loan EMI Scheduled: ${d.name}`,
         description: `Monthly installment of ₹${d.emi.toLocaleString('en-IN')} scheduled.`,
         category: 'Debt',
