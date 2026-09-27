@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Bell, AlertTriangle, AlertCircle, CheckCircle, Info, ArrowRight, Check } from 'lucide-react';
 import { SmartAlert } from '@/lib/types/finance';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 interface SmartAlertsCardProps {
@@ -16,7 +17,7 @@ export function SmartAlertsCard({ alerts, onMarkRead }: SmartAlertsCardProps) {
   const getAlertIcon = (type: SmartAlert['type']) => {
     switch (type) {
       case 'danger':
-        return <AlertCircle className="size-4 text-destructive shrink-0 mt-0.5" />;
+        return <AlertCircle className="size-4 text-rose-400 shrink-0 mt-0.5" />;
       case 'warning':
         return <AlertTriangle className="size-4 text-amber-400 shrink-0 mt-0.5" />;
       case 'success':
@@ -29,13 +30,26 @@ export function SmartAlertsCard({ alerts, onMarkRead }: SmartAlertsCardProps) {
   const getAlertBadgeClass = (type: SmartAlert['type']) => {
     switch (type) {
       case 'danger':
-        return 'bg-destructive/10 text-destructive border-destructive/20';
+        return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
       case 'warning':
         return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
       case 'success':
         return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
       default:
         return 'bg-sky-500/10 text-sky-400 border-sky-500/20';
+    }
+  };
+
+  const getAlertBorderClass = (type: SmartAlert['type']) => {
+    switch (type) {
+      case 'danger':
+        return 'border-l-2 border-l-rose-500';
+      case 'warning':
+        return 'border-l-2 border-l-amber-500';
+      case 'success':
+        return 'border-l-2 border-l-emerald-500';
+      default:
+        return 'border-l-2 border-l-sky-500';
     }
   };
 
@@ -75,9 +89,11 @@ export function SmartAlertsCard({ alerts, onMarkRead }: SmartAlertsCardProps) {
           alerts.slice(0, 4).map((alert) => (
             <div
               key={alert.id}
-              className={`p-3.5 flex items-start justify-between gap-3 hover:bg-muted/30 transition-colors ${
-                !alert.read ? 'bg-accent/5' : ''
-              }`}
+              className={cn(
+                'p-3.5 flex items-start justify-between gap-3 hover:bg-secondary/40 transition-colors',
+                getAlertBorderClass(alert.type),
+                !alert.read ? 'bg-secondary/20' : 'bg-transparent'
+              )}
             >
               <div className="flex items-start gap-3">
                 {getAlertIcon(alert.type)}

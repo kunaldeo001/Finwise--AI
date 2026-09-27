@@ -10,8 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Inter', 'sans-serif'],
+        body: ['var(--font-sans)', 'Inter', 'sans-serif'],
+        headline: ['var(--font-sans)', 'Inter', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -64,6 +65,21 @@ export default {
           'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
+        },
+        // Centralized FinWise Semantic Financial Color Tokens
+        fin: {
+          income: 'hsl(var(--fin-income))',
+          expense: 'hsl(var(--fin-expense))',
+          savings: 'hsl(var(--fin-savings))',
+          investment: 'hsl(var(--fin-investment))',
+          debt: 'hsl(var(--fin-debt))',
+          goals: 'hsl(var(--fin-goals))',
+          budget: 'hsl(var(--fin-budget))',
+          sub: 'hsl(var(--fin-sub))',
+          warning: 'hsl(var(--fin-warning))',
+          critical: 'hsl(var(--fin-critical))',
+          success: 'hsl(var(--fin-success))',
+          info: 'hsl(var(--fin-info))',
         },
       },
       borderRadius: {

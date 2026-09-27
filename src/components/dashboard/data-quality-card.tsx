@@ -20,6 +20,7 @@ import { useFinwiseData } from '@/hooks/use-finwise-data';
 import { auditFinancialDataQuality } from '@/lib/finance/data-quality';
 import { logAuditEvent } from '@/lib/finance/audit-trail';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export function DataQualityAndMonthlyCloseCard() {
   const finwise = useFinwiseData();
@@ -58,42 +59,49 @@ export function DataQualityAndMonthlyCloseCard() {
   const getSeverityBadge = (severity: 'CRITICAL' | 'WARNING' | 'INFO') => {
     switch (severity) {
       case 'CRITICAL':
-        return <Badge variant="destructive" className="text-[9px] py-0 px-1 font-mono">CRITICAL</Badge>;
+        return <Badge variant="outline" className="text-rose-400 border-rose-500/30 bg-rose-500/10 text-[9px] py-0 px-1 font-mono">CRITICAL</Badge>;
       case 'WARNING':
-        return <Badge variant="outline" className="text-amber-400 border-amber-500/40 bg-amber-500/10 text-[9px] py-0 px-1 font-mono">WARNING</Badge>;
+        return <Badge variant="outline" className="text-amber-400 border-amber-500/30 bg-amber-500/10 text-[9px] py-0 px-1 font-mono">WARNING</Badge>;
       case 'INFO':
-        return <Badge variant="secondary" className="text-muted-foreground text-[9px] py-0 px-1 font-mono">INFO</Badge>;
+        return <Badge variant="outline" className="text-sky-400 border-sky-500/30 bg-sky-500/10 text-[9px] py-0 px-1 font-mono">INFO</Badge>;
     }
   };
+
+  const isHealthy = report.qualityScore >= 90;
+  const isWarning = report.qualityScore >= 75 && report.qualityScore < 90;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* 1. Financial Data Quality Engine */}
-      <Card className="shadow-sm border border-border/70">
+      <Card className="shadow-sm border border-border/70 relative overflow-hidden">
         <CardHeader className="pb-3 border-b">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="size-4 text-emerald-400" />
+                <ShieldCheck className="size-4.5 text-emerald-400" />
                 <CardTitle className="text-base font-semibold">Financial Data Quality</CardTitle>
               </div>
               <CardDescription className="text-xs">
-                Deterministic validation: {report.totalTransactionsAnalyzed} transactions & records audited.
+                Deterministic ledger validation: {report.totalTransactionsAnalyzed} transactions & records audited.
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-foreground">Score: {report.qualityScore}/100</span>
+              <div className="text-right">
+                <div className="text-sm font-bold font-mono text-foreground">
+                  {report.qualityScore} <span className="text-xs font-normal text-muted-foreground">/ 100</span>
+                </div>
+              </div>
               <Badge
                 variant="outline"
-                className={`text-[10px] ${
-                  report.qualityScore >= 90
+                className={`text-[10px] font-semibold ${
+                  isHealthy
                     ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
-                    : report.qualityScore >= 75
+                    : isWarning
                     ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
-                    : 'text-destructive border-destructive/30'
+                    : 'text-rose-400 border-rose-500/30 bg-rose-500/10'
                 }`}
               >
-                {report.qualityScore >= 90 ? 'Healthy Data' : 'Review Advised'}
+                ● {isHealthy ? 'Healthy Data' : isWarning ? 'Warnings' : 'Critical Issues'}
               </Badge>
             </div>
           </div>
@@ -102,32 +110,47 @@ export function DataQualityAndMonthlyCloseCard() {
         <CardContent className="pt-4 space-y-4">
           <Progress
             value={report.qualityScore}
-            className="h-1.5 bg-muted [&>*]:bg-emerald-400"
+            className="h-1.5 bg-muted/70"
+            indicatorClassName={isHealthy ? 'bg-emerald-500' : isWarning ? 'bg-amber-500' : 'bg-rose-500'}
           />
 
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground border-b pb-2">
-            <span>Critical Errors: <strong className="text-foreground">{report.criticalCount}</strong></span>
-            <span>Warnings: <strong className="text-amber-400">{report.warningCount}</strong></span>
-            <span>Observations: <strong className="text-foreground">{report.infoCount}</strong></span>
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground border-b border-border/50 pb-2.5">
+            <span className="flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-rose-500/80 inline-block" />
+              Critical: <strong className="text-foreground font-mono">{report.criticalCount}</strong>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-amber-400/80 inline-block" />
+              Warnings: <strong className="text-amber-400 font-mono">{report.warningCount}</strong>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-2 rounded-full bg-sky-400/80 inline-block" />
+              Observations: <strong className="text-foreground font-mono">{report.infoCount}</strong>
+            </span>
           </div>
 
           <div className="space-y-2">
             {report.issues.length === 0 ? (
-              <div className="flex items-center gap-2 text-xs text-emerald-400 p-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+              <div className="flex items-center gap-2 text-xs text-emerald-400 p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
                 <CheckCircle2 className="size-4 shrink-0" />
-                <span>Zero integrity defects detected. All dates, amounts, and ledger categorizations are consistent.</span>
+                <span>Zero integrity defects detected. All dates, amounts, and ledger categorizations are verified.</span>
               </div>
             ) : (
               report.issues.slice(0, 4).map((issue) => (
                 <div
                   key={issue.id}
-                  className="rounded-lg border border-border/60 bg-card p-2.5 text-xs space-y-1.5 cursor-pointer hover:bg-muted/30 transition-colors"
+                  className={cn(
+                    "rounded-lg border border-border/60 bg-card p-2.5 text-xs space-y-1.5 cursor-pointer hover:bg-secondary/40 transition-all",
+                    issue.severity === 'CRITICAL' && "border-l-2 border-l-rose-500",
+                    issue.severity === 'WARNING' && "border-l-2 border-l-amber-500",
+                    issue.severity === 'INFO' && "border-l-2 border-l-sky-500"
+                  )}
                   onClick={() => setExpandedIssue(expandedIssue === issue.id ? null : issue.id)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 font-medium">
                       {getSeverityBadge(issue.severity)}
-                      <span className="text-foreground">{issue.issue}</span>
+                      <span className="text-foreground font-medium">{issue.issue}</span>
                       <span className="text-muted-foreground font-mono text-[10px]">({issue.affectedRecords})</span>
                     </div>
                     {expandedIssue === issue.id ? (
@@ -140,7 +163,7 @@ export function DataQualityAndMonthlyCloseCard() {
                   {expandedIssue === issue.id && (
                     <div className="pt-2 border-t border-border/40 text-[11px] space-y-1 text-muted-foreground">
                       <p><strong className="text-foreground">Explanation:</strong> {issue.explanation}</p>
-                      <p><strong className="text-accent">Suggested Fix:</strong> {issue.suggestedFix}</p>
+                      <p><strong className="text-emerald-400">Suggested Fix:</strong> {issue.suggestedFix}</p>
                     </div>
                   )}
                 </div>

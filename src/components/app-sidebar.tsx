@@ -68,13 +68,17 @@ export function AppSidebar() {
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="size-8 rounded-lg bg-accent/20 border border-accent/40 flex items-center justify-center text-accent">
-            <Activity className="size-5" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="size-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-xs group-hover:bg-emerald-500/25 transition-all">
+            <Activity className="size-4.5" />
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-bold tracking-tight text-sidebar-foreground">FinWise AI</span>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Personal Finance Copilot</span>
+            <span className="text-base font-bold tracking-tight text-sidebar-foreground group-hover:text-emerald-400 transition-colors">
+              FinWise AI
+            </span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+              Financial Intelligence
+            </span>
           </div>
         </Link>
       </SidebarHeader>
@@ -85,19 +89,22 @@ export function AppSidebar() {
 
       <SidebarFooter className="border-t border-sidebar-border p-3 flex flex-col gap-2">
         {user ? (
-          <div className="flex flex-col gap-2 bg-sidebar-accent/30 rounded-lg p-2.5 border border-sidebar-border/60">
+          <div className="flex flex-col gap-2 bg-sidebar-accent/40 rounded-xl p-2.5 border border-sidebar-border/80">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 overflow-hidden">
-                <div className="size-7 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent text-xs font-bold">
+                <div className="size-7 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold shrink-0">
                   {user.email ? user.email.charAt(0).toUpperCase() : 'G'}
                 </div>
                 <div className="flex flex-col overflow-hidden">
                   <span className="text-xs font-medium truncate text-sidebar-foreground">
                     {user.email || 'Guest User'}
                   </span>
-                  <span className="text-[10px] text-muted-foreground truncate">
-                    {user.isAnonymous ? 'Demo Session' : 'Verified'}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-[10px] text-muted-foreground truncate font-mono">
+                      {user.isAnonymous ? 'Demo Mode' : 'Verified'}
+                    </span>
+                  </div>
                 </div>
               </div>
               <Button
@@ -105,7 +112,7 @@ export function AppSidebar() {
                 size="icon"
                 onClick={handleSignOut}
                 title="Sign Out"
-                className="size-7 text-muted-foreground hover:text-destructive"
+                className="size-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
               >
                 <LogOut className="size-3.5" />
               </Button>
@@ -116,7 +123,7 @@ export function AppSidebar() {
               size="sm"
               onClick={handleSeedDemo}
               disabled={seeding}
-              className="w-full text-xs h-7 border-dashed border-accent/40 hover:bg-accent/10 text-accent gap-1"
+              className="w-full text-xs h-7 border border-emerald-500/30 hover:bg-emerald-500/10 text-emerald-400 gap-1 font-medium"
             >
               <Database className="size-3" />
               {seeding ? 'Loading...' : 'Load Sample Data'}
@@ -128,14 +135,14 @@ export function AppSidebar() {
               variant="default"
               size="sm"
               onClick={handleGuestLogin}
-              className="w-full text-xs h-8 gap-1.5 bg-accent text-accent-foreground font-semibold"
+              className="w-full text-xs h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm"
             >
               <Sparkles className="size-3.5" />
               Explore FinWise Demo
             </Button>
             <div className="flex items-center justify-between text-[10px] text-muted-foreground px-1">
-              <span>Ready-to-use sample fintech sandbox</span>
-              <Badge variant="outline" className="text-[9px] py-0 px-1 border-accent/40 text-accent font-mono">
+              <span>Sample fintech sandbox</span>
+              <Badge variant="outline" className="text-[9px] py-0 px-1 border-emerald-500/30 text-emerald-400 font-mono">
                 DEMO DATA
               </Badge>
             </div>

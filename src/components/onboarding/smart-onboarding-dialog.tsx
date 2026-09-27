@@ -104,7 +104,7 @@ export function SmartOnboardingDialog() {
                     onClick={() => setPrimaryGoal(g)}
                     className={`p-2.5 rounded-lg border text-left text-xs transition-all ${
                       primaryGoal === g
-                        ? 'border-accent bg-accent/15 text-accent font-semibold'
+                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 font-semibold'
                         : 'border-border/60 hover:bg-muted/40 text-foreground'
                     }`}
                   >

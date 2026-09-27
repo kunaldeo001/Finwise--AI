@@ -43,7 +43,7 @@ import {
 import { useFinwiseData } from '@/hooks/use-finwise-data';
 import { yearlyExpenses } from '@/lib/placeholder-data';
 
-const PIE_COLORS = ['#38bdf8', '#34d399', '#f59e0b', '#ec4899', '#a855f7', '#6366f1', '#64748b'];
+const PIE_COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#14B8A6', '#6366F1', '#F59E0B', '#64748B'];
 
 export function AnalyticsDashboard() {
   const finwise = useFinwiseData();
@@ -142,8 +142,8 @@ export function AnalyticsDashboard() {
                     contentStyle={{ backgroundColor: 'hsl(var(--popover))', borderColor: 'hsl(var(--border))', fontSize: '12px' }}
                   />
                   <Legend />
-                  <Bar dataKey="income" name="Income" fill="#34d399" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expenses" name="Expenses" fill="#f87171" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="income" name="Income" fill="#10B981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expenses" name="Expenses" fill="#EF4444" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -245,8 +245,8 @@ export function AnalyticsDashboard() {
                 <AreaChart data={incomeVsExpenseData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="savingsGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#10B981" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#10B981" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
@@ -260,7 +260,7 @@ export function AnalyticsDashboard() {
                     type="monotone"
                     dataKey="savings"
                     name="Net Savings"
-                    stroke="hsl(var(--accent))"
+                    stroke="#10B981"
                     strokeWidth={2}
                     fill="url(#savingsGrad)"
                   />

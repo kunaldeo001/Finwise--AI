@@ -39,11 +39,11 @@ export function ProactiveInsightsCard() {
   };
 
   return (
-    <Card className="shadow-sm border border-accent/30 bg-gradient-to-br from-card via-card to-accent/5">
+    <Card className="shadow-sm border border-violet-500/25 bg-gradient-to-br from-card via-card to-violet-500/5">
       <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="size-6 rounded-md bg-accent/20 flex items-center justify-center text-accent">
+            <div className="size-6 rounded-md bg-violet-500/15 border border-violet-500/25 flex items-center justify-center text-violet-400">
               <Sparkles className="size-3.5" />
             </div>
             <CardTitle className="text-base font-semibold">AI Financial Insight Engine</CardTitle>
@@ -52,7 +52,7 @@ export function ProactiveInsightsCard() {
             Continuous autonomous ledger surveillance with data-backed reasoning & suggested actions.
           </CardDescription>
         </div>
-        <Button variant="outline" size="sm" asChild className="text-xs h-7 gap-1 border-accent/40 text-accent">
+        <Button variant="outline" size="sm" asChild className="text-xs h-7 gap-1 border-violet-500/30 text-violet-400 hover:text-violet-300 hover:border-violet-500/50">
           <Link href="/assistant">
             Deep-Dive Copilot <ArrowRight className="size-3" />
           </Link>

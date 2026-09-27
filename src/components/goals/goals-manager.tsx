@@ -235,11 +235,12 @@ export function GoalsManager() {
           const IconComp = categoryIconMap[goal.category] || Target;
 
           return (
-            <Card key={goal.id} className="shadow-sm border border-border/70 flex flex-col justify-between">
+            <Card key={goal.id} className="relative overflow-hidden shadow-sm border border-border/70 hover:border-purple-500/30 transition-all duration-200 flex flex-col justify-between">
+              <div className="h-0.5 w-full bg-gradient-to-r from-purple-500/60 to-emerald-500/60" />
               <CardHeader className="p-4 pb-2">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="size-9 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+                    <div className="size-9 rounded-xl bg-purple-500/10 border border-purple-500/25 flex items-center justify-center text-purple-400 shrink-0">
                       <IconComp className="size-4" />
                     </div>
                     <div>
@@ -273,40 +274,44 @@ export function GoalsManager() {
                 {/* Progress amounts */}
                 <div>
                   <div className="flex justify-between items-baseline mb-1">
-                    <span className="text-2xl font-bold">
+                    <span className="text-2xl font-bold text-foreground tabular-nums">
                       ₹{goal.currentAmount.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground tabular-nums">
                       Target: ₹{goal.targetAmount.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  <Progress value={metrics.progressPercentage} className="h-2.5 bg-muted [&>*]:bg-accent" />
+                  <Progress
+                    value={metrics.progressPercentage}
+                    className="h-2.5 bg-secondary"
+                    indicatorClassName={metrics.isOnTrack ? "bg-emerald-500" : "bg-purple-500"}
+                  />
                   <div className="flex justify-between items-center text-[11px] text-muted-foreground mt-1">
-                    <span>{metrics.progressPercentage}% funded</span>
-                    <span>₹{metrics.remainingAmount.toLocaleString('en-IN')} to go</span>
+                    <span className="tabular-nums font-medium text-foreground">{metrics.progressPercentage}% funded</span>
+                    <span className="tabular-nums">₹{metrics.remainingAmount.toLocaleString('en-IN')} to go</span>
                   </div>
                 </div>
 
                 {/* Metrics Breakdown */}
-                <div className="grid grid-cols-2 gap-2 text-xs bg-muted/30 p-2.5 rounded-lg border">
+                <div className="grid grid-cols-2 gap-2 text-xs bg-secondary/30 p-2.5 rounded-lg border border-border/50">
                   <div>
-                    <span className="text-muted-foreground block text-[10px]">Monthly Saved</span>
-                    <span className="font-semibold text-foreground">
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">Monthly Saved</span>
+                    <span className="font-semibold text-foreground tabular-nums">
                       ₹{(goal.monthlyContribution || 0).toLocaleString('en-IN')}/mo
                     </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground block text-[10px]">Required Velocity</span>
-                    <span className="font-semibold text-foreground">
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">Required Velocity</span>
+                    <span className="font-semibold text-foreground tabular-nums">
                       ₹{metrics.requiredMonthlySavings.toLocaleString('en-IN')}/mo
                     </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground block text-[10px]">Target Date</span>
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">Target Date</span>
                     <span className="font-medium text-foreground">{goal.targetDate}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground block text-[10px]">Pace Status</span>
+                    <span className="text-muted-foreground block text-[10px] uppercase tracking-wider">Pace Status</span>
                     <span
                       className={`font-semibold ${
                         metrics.isOnTrack ? 'text-emerald-400' : 'text-amber-400'
@@ -326,7 +331,7 @@ export function GoalsManager() {
                       variant="outline"
                       size="sm"
                       onClick={() => handleContribute(goal, amt)}
-                      className="h-6 text-[10px] px-2"
+                      className="h-6 text-[10px] px-2 hover:border-emerald-500/40 hover:text-emerald-400"
                     >
                       +₹{amt.toLocaleString('en-IN')}
                     </Button>
@@ -336,8 +341,8 @@ export function GoalsManager() {
 
               <CardFooter className="p-4 pt-2 border-t border-border/50 flex justify-between items-center text-xs">
                 <Badge
-                  variant="outline"
-                  className={metrics.isOnTrack ? 'border-emerald-400/40 text-emerald-400' : 'border-amber-400/40 text-amber-400'}
+                  variant={metrics.isOnTrack ? 'success' : 'warning'}
+                  className="text-[10px]"
                 >
                   {metrics.isOnTrack ? 'On Schedule' : 'Needs Adjustment'}
                 </Badge>

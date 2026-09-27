@@ -73,7 +73,7 @@ const ASSET_TYPES: Array<{ value: AssetType; label: string }> = [
   { value: 'other', label: 'Other' },
 ];
 
-const PIE_COLORS = ['#38bdf8', '#34d399', '#f59e0b', '#ec4899', '#a855f7', '#64748b'];
+const PIE_COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#14B8A6', '#6366F1', '#F59E0B'];
 
 const EDUCATIONAL_CONCEPTS = [
   {
@@ -301,38 +301,41 @@ export function InvestmentsManager() {
 
       {/* Overview KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-border transition-all duration-200">
+          <div className="h-0.5 w-full bg-slate-500/40" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">Total Invested</span>
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Invested</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               ₹{totalInvested.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">{finwise.investments.length} active holdings</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-blue-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">Current Valuation</span>
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Current Valuation</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               ₹{currentValue.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Live market value</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+          <div className={cn("h-0.5 w-full", totalGain >= 0 ? "bg-emerald-500/60" : "bg-rose-500/60")} />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">Total Returns</span>
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Returns</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
             <div
-              className={`text-2xl font-bold flex items-center gap-1 ${
-                totalGain >= 0 ? 'text-emerald-400' : 'text-destructive'
+              className={`text-2xl font-bold flex items-center gap-1 tabular-nums ${
+                totalGain >= 0 ? 'text-emerald-400' : 'text-rose-400'
               }`}
             >
               {totalGain >= 0 ? <ArrowUpRight className="size-5" /> : <ArrowDownRight className="size-5" />}
@@ -344,14 +347,15 @@ export function InvestmentsManager() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+          <div className={cn("h-0.5 w-full", returnRate >= 0 ? "bg-emerald-500/60" : "bg-rose-500/60")} />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">Overall ROI</span>
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Overall ROI</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
             <div
-              className={`text-2xl font-bold ${
-                returnRate >= 0 ? 'text-accent' : 'text-destructive'
+              className={`text-2xl font-bold tabular-nums ${
+                returnRate >= 0 ? 'text-emerald-400' : 'text-rose-400'
               }`}
             >
               {returnRate >= 0 ? '+' : ''}{returnRate.toFixed(2)}%

@@ -57,6 +57,7 @@ import { exportTransactionsCSV } from '@/lib/finance/export';
 import { useToast } from '@/hooks/use-toast';
 import { CSVImportDialog } from './csv-import-dialog';
 import { ScanBill } from '@/components/expenses/scan-bill';
+import { cn } from '@/lib/utils';
 
 const CATEGORIES: TransactionCategory[] = [
   'Salary',
@@ -293,7 +294,7 @@ export function TransactionsManager() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsScanOpen(true)}
-                className="h-8 text-xs gap-1.5"
+                className="h-8 text-xs gap-1.5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
               >
                 <ScanLine className="size-3.5" />
                 Scan Bill
@@ -302,7 +303,7 @@ export function TransactionsManager() {
               {/* Add Transaction Dialog */}
               <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="h-8 text-xs gap-1.5">
+                  <Button size="sm" className="h-8 text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-sm">
                     <PlusCircle className="size-3.5" />
                     Add Transaction
                   </Button>
@@ -481,7 +482,7 @@ export function TransactionsManager() {
                   const isIncome = tx.type === 'income';
 
                   return (
-                    <TableRow key={tx.id} className="text-xs hover:bg-muted/30">
+                    <TableRow key={tx.id} className="text-xs hover:bg-secondary/40 transition-colors">
                       <TableCell className="font-mono text-muted-foreground whitespace-nowrap">
                         {tx.date}
                       </TableCell>
@@ -489,7 +490,7 @@ export function TransactionsManager() {
                         <div className="font-semibold text-foreground flex items-center gap-1.5">
                           {tx.merchant}
                           {tx.isRecurring && (
-                            <Badge variant="outline" className="text-[9px] py-0 px-1 border-sky-400/40 text-sky-400">
+                            <Badge variant="outline" className="text-[9px] py-0 px-1 border-violet-500/30 bg-violet-500/10 text-violet-400 font-mono">
                               Recurring
                             </Badge>
                           )}
@@ -505,14 +506,15 @@ export function TransactionsManager() {
                           {tx.category}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{tx.paymentMethod || 'UPI'}</TableCell>
+                      <TableCell className="text-muted-foreground font-mono text-[11px]">{tx.paymentMethod || 'UPI'}</TableCell>
                       <TableCell className="text-right font-bold whitespace-nowrap">
                         <span
-                          className={`inline-flex items-center gap-0.5 ${
-                            isIncome ? 'text-emerald-400' : 'text-foreground'
-                          }`}
+                          className={cn(
+                            "inline-flex items-center gap-0.5 tabular-nums font-mono",
+                            isIncome ? "text-emerald-400" : "text-rose-400"
+                          )}
                         >
-                          {isIncome ? <ArrowUpRight className="size-3" /> : <ArrowDownRight className="size-3 text-muted-foreground" />}
+                          {isIncome ? <ArrowUpRight className="size-3 text-emerald-400" /> : <ArrowDownRight className="size-3 text-rose-400" />}
                           {isIncome ? '+' : '-'}₹{tx.amount.toLocaleString('en-IN')}
                         </span>
                       </TableCell>
@@ -521,7 +523,7 @@ export function TransactionsManager() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDelete(tx.id)}
-                          className="size-7 text-muted-foreground hover:text-destructive"
+                          className="size-7 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10"
                           title="Delete"
                         >
                           <Trash2 className="size-3.5" />

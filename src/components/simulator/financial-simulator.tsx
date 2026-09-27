@@ -28,6 +28,7 @@ import {
 } from 'recharts';
 import { useFinwiseData } from '@/hooks/use-finwise-data';
 import { simulateFinancialScenario } from '@/lib/finance/calculations';
+import { cn } from '@/lib/utils';
 
 export function FinancialSimulator() {
   const finwise = useFinwiseData();
@@ -134,12 +135,13 @@ export function FinancialSimulator() {
 
       {/* Simulator Metrics Comparison */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-blue-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">Monthly Net Savings</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Monthly Net Savings</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-accent">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               ₹{simulation.newNetSavings.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -148,12 +150,13 @@ export function FinancialSimulator() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-emerald-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">New Savings Rate</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">New Savings Rate</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-emerald-400">
+            <div className="text-2xl font-bold text-emerald-400 tabular-nums">
               {simulation.newSavingsRate}%
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -162,12 +165,13 @@ export function FinancialSimulator() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-teal-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-teal-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">Post-Action Cash Reserve</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Post-Action Cash Reserve</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               ₹{simulation.newLiquidSavings.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -176,14 +180,15 @@ export function FinancialSimulator() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+          <div className={cn("h-0.5 w-full", simulation.netWorthDeltaAtYear5 >= 0 ? "bg-emerald-500/60" : "bg-rose-500/60")} />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">5-Yr Net Worth Shift</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">5-Yr Net Worth Shift</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
             <div
-              className={`text-2xl font-bold flex items-center gap-1 ${
-                simulation.netWorthDeltaAtYear5 >= 0 ? 'text-emerald-400' : 'text-destructive'
+              className={`text-2xl font-bold flex items-center gap-1 tabular-nums ${
+                simulation.netWorthDeltaAtYear5 >= 0 ? 'text-emerald-400' : 'text-rose-400'
               }`}
             >
               {simulation.netWorthDeltaAtYear5 >= 0 ? <ArrowUpRight className="size-5" /> : <ArrowDownRight className="size-5" />}

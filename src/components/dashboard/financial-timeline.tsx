@@ -154,8 +154,8 @@ export function FinancialTimeline() {
               return (
                 <div key={evt.id} className="relative group">
                   {/* Timeline dot */}
-                  <div className="absolute -left-[31px] top-0.5 size-4 rounded-full bg-background border-2 border-accent flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <div className="size-1.5 rounded-full bg-accent" />
+                  <div className="absolute -left-[31px] top-0.5 size-4 rounded-full bg-background border-2 border-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="size-1.5 rounded-full bg-emerald-500" />
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs">
@@ -168,7 +168,7 @@ export function FinancialTimeline() {
                             'text-[9px] py-0 px-1',
                             evt.type === 'income' && 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
                             evt.type === 'alert' && 'text-amber-400 border-amber-500/30 bg-amber-500/10',
-                            evt.type === 'milestone' && 'text-accent border-accent/30 bg-accent/10',
+                            evt.type === 'milestone' && 'text-blue-400 border-blue-500/30 bg-blue-500/10',
                             evt.type === 'expense' && 'text-foreground border-border/60'
                           )}
                         >
@@ -183,11 +183,11 @@ export function FinancialTimeline() {
                       {evt.amount !== undefined && (
                         <span
                           className={cn(
-                            'font-semibold text-xs',
-                            evt.type === 'income' ? 'text-emerald-400' : 'text-foreground'
+                            'font-semibold text-xs tabular-nums',
+                            evt.type === 'income' ? 'text-emerald-400' : 'text-rose-400'
                           )}
                         >
-                          {evt.type === 'income' ? '+' : ''}₹{evt.amount.toLocaleString('en-IN')}
+                          {evt.type === 'income' ? '+' : '-'}₹{evt.amount.toLocaleString('en-IN')}
                         </span>
                       )}
                     </div>

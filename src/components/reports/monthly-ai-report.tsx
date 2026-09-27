@@ -220,27 +220,27 @@ export function MonthlyAIReport() {
         <CardContent className="p-6 space-y-6">
           {/* Executive KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-3.5 rounded-lg border bg-muted/20">
+            <div className="p-3.5 rounded-lg border border-border/70 bg-card/60">
               <span className="text-xs text-muted-foreground font-medium block">Total Monthly Income</span>
-              <span className="text-xl font-bold text-emerald-400">
+              <span className="text-xl font-bold text-emerald-400 tabular-nums">
                 ₹{totals.currentMonthIncome.toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="p-3.5 rounded-lg border bg-muted/20">
+            <div className="p-3.5 rounded-lg border border-border/70 bg-card/60">
               <span className="text-xs text-muted-foreground font-medium block">Total Monthly Expenses</span>
-              <span className="text-xl font-bold text-foreground">
+              <span className="text-xl font-bold text-rose-400 tabular-nums">
                 ₹{totals.currentMonthExpenses.toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="p-3.5 rounded-lg border bg-muted/20">
+            <div className="p-3.5 rounded-lg border border-border/70 bg-card/60">
               <span className="text-xs text-muted-foreground font-medium block">Net Saved Surplus</span>
-              <span className="text-xl font-bold text-accent">
+              <span className="text-xl font-bold text-emerald-400 tabular-nums">
                 ₹{totals.netSavings.toLocaleString('en-IN')}
               </span>
             </div>
-            <div className="p-3.5 rounded-lg border bg-muted/20">
+            <div className="p-3.5 rounded-lg border border-border/70 bg-card/60">
               <span className="text-xs text-muted-foreground font-medium block">Savings Rate</span>
-              <span className="text-xl font-bold text-foreground">
+              <span className="text-xl font-bold text-foreground tabular-nums">
                 {totals.savingsRate.toFixed(1)}%
               </span>
             </div>

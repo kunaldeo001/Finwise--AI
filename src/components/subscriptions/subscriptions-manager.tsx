@@ -103,48 +103,52 @@ export function SubscriptionsManager() {
     <div className="space-y-6">
       {/* Top Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-violet-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-violet-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">Monthly Outflow</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Monthly Outflow</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               ₹{monthlyTotal.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Automatic recurring commitments</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-rose-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-rose-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">Annual Recurring Total</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Annual Recurring Total</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-destructive">
+            <div className="text-2xl font-bold text-rose-400 tabular-nums">
               ₹{annualTotal.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Total yearly subscription cost</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-blue-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">Active Mandates</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Active Mandates</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-accent">
+            <div className="text-2xl font-bold text-blue-400 tabular-nums">
               {activeSubs.length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Detected streaming, SaaS, utilities</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-emerald-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-[11px] text-muted-foreground uppercase font-medium">Annual Audit Opportunity</span>
+            <span className="text-[11px] text-muted-foreground uppercase font-medium tracking-wider">Annual Audit Opportunity</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-emerald-400">
+            <div className="text-2xl font-bold text-emerald-400 tabular-nums">
               ₹{Math.round(annualTotal * 0.25).toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Est. 25% savings by trimming duplicate services</p>
@@ -153,13 +157,13 @@ export function SubscriptionsManager() {
       </div>
 
       {/* AI Subscription Insight Banner */}
-      <div className="bg-accent/10 border border-accent/30 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="bg-violet-500/10 border border-violet-500/25 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
-          <div className="size-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent shrink-0">
+          <div className="size-8 rounded-lg bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-violet-400 shrink-0">
             <Sparkles className="size-4" />
           </div>
           <div>
-            <span className="font-semibold text-accent text-sm block">AI Subscription Intelligence</span>
+            <span className="font-semibold text-violet-400 text-sm block">AI Subscription Intelligence</span>
             <p className="text-foreground mt-0.5">
               You are spending approximately <span className="font-bold">₹{annualTotal.toLocaleString('en-IN')}/year</span> on recurring digital services. Your largest recurring charge is {activeSubs[0]?.merchant || 'Netflix'}.
             </p>

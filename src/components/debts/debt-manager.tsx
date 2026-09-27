@@ -45,6 +45,7 @@ import { DebtItem } from '@/lib/types/finance';
 import { calculateEMI, calculateDebtPayoff } from '@/lib/finance/calculations';
 import { addDebt, updateDebt, deleteDebt } from '@/lib/finance/firestore-service';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 const DEBT_CATEGORIES: DebtItem['category'][] = [
   'Home Loan',
@@ -201,40 +202,43 @@ export function DebtManager() {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-amber-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-amber-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
               Total Outstanding Balance
             </span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-2xl font-bold text-foreground tabular-nums">
               ₹{totalOutstanding.toLocaleString('en-IN')}
             </div>
             <p className="text-xs text-muted-foreground mt-1">{finwise.debts.length} active loans & credit lines</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-rose-500/30 transition-all duration-200">
+          <div className="h-0.5 w-full bg-rose-500/60" />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">Monthly EMI Outflow</span>
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Monthly EMI Outflow</span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className="text-2xl font-bold text-destructive">
+            <div className="text-2xl font-bold text-rose-400 tabular-nums">
               ₹{totalMonthlyEmi.toLocaleString('en-IN')}/mo
             </div>
             <p className="text-xs text-muted-foreground mt-1">Obligatory monthly debt service</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border border-border/70">
+        <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
+          <div className={cn("h-0.5 w-full", dti > 40 ? "bg-rose-500/60" : dti > 30 ? "bg-amber-500/60" : "bg-emerald-500/60")} />
           <CardHeader className="p-4 pb-1">
-            <span className="text-xs text-muted-foreground font-medium uppercase">
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
               Debt-to-Income (DTI)
             </span>
           </CardHeader>
           <CardContent className="p-4 pt-1">
-            <div className={`text-2xl font-bold ${dti > 40 ? 'text-destructive' : 'text-accent'}`}>
+            <div className={`text-2xl font-bold tabular-nums ${dti > 40 ? 'text-rose-400' : dti > 30 ? 'text-amber-400' : 'text-emerald-400'}`}>
               {dti.toFixed(1)}%
             </div>
             <p className="text-xs text-muted-foreground mt-1">

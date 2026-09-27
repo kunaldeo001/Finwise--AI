@@ -26,18 +26,19 @@ export function Portfolio() {
   const { investments } = useFinwiseData();
 
   return (
-    <Card className="shadow-sm border border-border/70">
+    <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
+      <div className="h-0.5 w-full bg-blue-500/60" />
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <div>
           <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <TrendingUp className="size-4 text-accent" />
+            <TrendingUp className="size-4 text-blue-400" />
             Investment Portfolio
           </CardTitle>
           <CardDescription className="text-xs">
             Multi-asset performance across stocks, mutual funds, and gold
           </CardDescription>
         </div>
-        <Button variant="ghost" size="sm" asChild className="text-xs text-accent gap-1">
+        <Button variant="ghost" size="sm" asChild className="text-xs text-blue-400 hover:text-blue-300 gap-1">
           <Link href="/investments">
             View All <ArrowRight className="size-3" />
           </Link>
@@ -79,19 +80,19 @@ export function Portfolio() {
                         </Badge>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right font-medium">
+                    <TableCell className="text-right font-medium tabular-nums">
                       {item.quantity} units
                     </TableCell>
-                    <TableCell className="text-right text-muted-foreground">
+                    <TableCell className="text-right text-muted-foreground tabular-nums">
                       ₹{item.buyPrice.toLocaleString('en-IN')}
                     </TableCell>
-                    <TableCell className="text-right font-bold text-foreground">
+                    <TableCell className="text-right font-bold text-foreground tabular-nums">
                       ₹{item.currentValue.toLocaleString('en-IN')}
                     </TableCell>
                     <TableCell
                       className={cn(
-                        'text-right font-semibold',
-                        isPositive ? 'text-emerald-400' : 'text-destructive'
+                        'text-right font-semibold tabular-nums',
+                        isPositive ? 'text-emerald-400' : 'text-rose-400'
                       )}
                     >
                       <div className="flex items-center justify-end gap-0.5">

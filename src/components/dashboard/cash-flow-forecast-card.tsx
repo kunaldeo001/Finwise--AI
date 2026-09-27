@@ -39,17 +39,18 @@ export function CashFlowForecastCard({
   }, [currentBalance, monthlyIncome, monthlyExpense, selectedHorizon]);
 
   return (
-    <Card className="overflow-hidden border border-border/70 shadow-sm">
-      <CardHeader className="pb-3 border-b bg-muted/20">
+    <Card className="relative overflow-hidden border border-border/70 hover:border-emerald-500/30 transition-all duration-200 shadow-sm">
+      <div className="h-0.5 w-full bg-gradient-to-r from-emerald-500/60 to-blue-500/60" />
+      <CardHeader className="pb-3 border-b bg-muted/10">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+            <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
               <TrendingUp className="size-4" />
             </div>
             <div>
               <CardTitle className="text-base font-semibold flex items-center gap-2">
                 Cash Flow Forecasting
-                <Badge variant="outline" className="text-[10px] text-accent border-accent/30">
+                <Badge variant="outline" className="text-[10px] text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
                   {forecast.confidence} Confidence
                 </Badge>
               </CardTitle>
@@ -120,8 +121,8 @@ export function CashFlowForecastCard({
             <AreaChart data={forecast.points} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--accent))" stopOpacity={0.4} />
-                  <stop offset="95%" stopColor="hsl(var(--accent))" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.6} />
@@ -144,7 +145,7 @@ export function CashFlowForecastCard({
                     return (
                       <div className="rounded-lg border bg-popover p-2.5 shadow-md text-xs space-y-1">
                         <div className="font-semibold text-foreground">{data.date}</div>
-                        <div className="text-accent font-medium">
+                        <div className="text-emerald-400 font-medium">
                           Balance: ₹{data.projectedBalance.toLocaleString('en-IN')}
                         </div>
                         <div className="text-muted-foreground">
@@ -162,7 +163,7 @@ export function CashFlowForecastCard({
               <Area
                 type="monotone"
                 dataKey="projectedBalance"
-                stroke="hsl(var(--accent))"
+                stroke="#10B981"
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#balanceGradient)"

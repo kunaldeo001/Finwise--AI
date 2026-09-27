@@ -20,11 +20,12 @@ export function NetWorthCard({
   liabilityDistribution,
 }: NetWorthCardProps) {
   return (
-    <Card className="overflow-hidden border border-border/70 shadow-sm">
-      <CardHeader className="pb-3 border-b bg-muted/20">
+    <Card className="relative overflow-hidden border border-border/70 hover:border-emerald-500/30 transition-all duration-200 shadow-sm">
+      <div className="h-0.5 w-full bg-gradient-to-r from-emerald-500/60 to-blue-500/60" />
+      <CardHeader className="pb-3 border-b bg-muted/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+            <div className="size-8 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-400">
               <Landmark className="size-4" />
             </div>
             <div>
@@ -35,9 +36,8 @@ export function NetWorthCard({
             </div>
           </div>
           <Badge
-            className={`text-xs px-2 py-0.5 font-bold ${
-              netWorth >= 0 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-destructive/10 text-destructive'
-            }`}
+            variant={netWorth >= 0 ? "success" : "destructive"}
+            className="text-xs px-2.5 py-0.5 font-semibold"
           >
             {netWorth >= 0 ? 'Positive Wealth' : 'In Debt'}
           </Badge>
@@ -50,7 +50,7 @@ export function NetWorthCard({
           <span className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">
             Total Net Worth
           </span>
-          <div className="text-3xl font-extrabold text-foreground">
+          <div className="text-3xl font-extrabold text-foreground tabular-nums">
             ₹{netWorth.toLocaleString('en-IN')}
           </div>
         </div>

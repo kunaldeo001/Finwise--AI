@@ -74,11 +74,12 @@ export function RunwayAndAffordabilityCard() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Cash Runway & Emergency Fund Planner */}
-      <Card className="shadow-sm border border-border/70">
+      <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-emerald-500/30 transition-all duration-200">
+        <div className="h-0.5 w-full bg-emerald-500/60" />
         <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Hourglass className="size-4 text-accent" />
+              <Hourglass className="size-4 text-emerald-400" />
               <CardTitle className="text-base font-semibold">Cash Runway & Emergency Reserve</CardTitle>
             </div>
             <CardDescription className="text-xs">
@@ -92,12 +93,12 @@ export function RunwayAndAffordabilityCard() {
 
         <CardContent className="pt-4 space-y-4 text-xs">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <div className="p-3 rounded-xl bg-muted/20 border border-border/50">
+            <div className="p-3 rounded-xl bg-card border border-border/50">
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider block">Essential Runway</span>
-              <span className="text-lg font-bold text-emerald-400 font-mono">
+              <span className="text-lg font-bold text-emerald-400 font-mono tabular-nums">
                 {runway.essentialRunwayMonths} <span className="text-xs font-normal">months</span>
               </span>
-              <span className="text-[10px] text-muted-foreground block mt-0.5">₹{essentialMonthlyExpenses.toLocaleString('en-IN')}/mo essential</span>
+              <span className="text-[10px] text-muted-foreground block mt-0.5 tabular-nums">₹{essentialMonthlyExpenses.toLocaleString('en-IN')}/mo essential</span>
             </div>
 
             <div className="p-3 rounded-xl bg-muted/20 border border-border/50">
@@ -154,11 +155,12 @@ export function RunwayAndAffordabilityCard() {
       </Card>
 
       {/* Affordability & Mathematical Stress Testing */}
-      <Card className="shadow-sm border border-border/70">
+      <Card className="relative overflow-hidden shadow-sm border border-border/70 hover:border-blue-500/30 transition-all duration-200">
+        <div className="h-0.5 w-full bg-blue-500/60" />
         <CardHeader className="pb-3 border-b flex flex-row items-center justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Calculator className="size-4 text-accent" />
+              <Calculator className="size-4 text-blue-400" />
               <CardTitle className="text-base font-semibold">Affordability & Stress Scenarios</CardTitle>
             </div>
             <CardDescription className="text-xs">

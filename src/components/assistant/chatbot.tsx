@@ -168,21 +168,21 @@ export function Chatbot() {
       </div>
 
       {/* Main Chat Conversation Card */}
-      <Card className="flex flex-col h-[650px] shadow-sm">
-        <CardHeader className="border-b py-3 px-6 flex flex-row items-center justify-between">
+      <Card className="flex flex-col h-[650px] shadow-sm border border-border/80 overflow-hidden">
+        <CardHeader className="py-3 px-6 flex flex-row items-center justify-between border-b border-violet-500/20 bg-gradient-to-r from-violet-500/10 via-card to-blue-500/5">
           <div className="flex items-center gap-3">
-            <div className="size-9 rounded-full bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+            <div className="size-9 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center text-violet-400 shadow-xs">
               <Bot className="size-5" />
             </div>
             <div>
               <CardTitle className="text-base font-semibold flex items-center gap-2">
                 FinWise AI Copilot 2.0
-                <Badge variant="outline" className="text-[10px] text-accent border-accent/40 bg-accent/5">
+                <Badge variant="outline" className="text-[10px] text-violet-400 border-violet-500/40 bg-violet-500/10 font-mono">
                   Multi-Turn Session Active
                 </Badge>
               </CardTitle>
               <CardDescription className="text-xs">
-                Context-aware financial reasoning assistant backed by your actual transactions & budgets
+                Context-aware financial reasoning assistant backed by verified ledger history & deterministic math
               </CardDescription>
             </div>
           </div>
@@ -199,7 +199,7 @@ export function Chatbot() {
                 },
               ])
             }
-            className="text-xs text-muted-foreground"
+            className="text-xs text-muted-foreground hover:text-foreground"
           >
             <RefreshCw className="size-3 mr-1" />
             Clear
@@ -218,8 +218,8 @@ export function Chatbot() {
               <div
                 className={`size-8 rounded-full flex items-center justify-center shrink-0 ${
                   msg.sender === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-accent/20 text-accent'
+                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    : 'bg-violet-500/15 border border-violet-500/30 text-violet-400'
                 }`}
               >
                 {msg.sender === 'user' ? <User className="size-4" /> : <Bot className="size-4" />}
@@ -232,12 +232,12 @@ export function Chatbot() {
                     variant="outline"
                     className={`text-[9px] py-0 px-1.5 font-mono tracking-wider w-fit ${
                       msg.epistemicTag === 'RECORDED'
-                        ? 'text-blue-400 border-blue-500/30 bg-blue-500/10'
+                        ? 'text-sky-400 border-sky-500/30 bg-sky-500/10'
                         : msg.epistemicTag === 'CALCULATED'
                         ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
                         : msg.epistemicTag === 'ESTIMATE'
                         ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
-                        : 'text-accent border-accent/30 bg-accent/10'
+                        : 'text-violet-400 border-violet-500/30 bg-violet-500/10'
                     }`}
                   >
                     {msg.epistemicTag}
@@ -247,8 +247,8 @@ export function Chatbot() {
                 <div
                   className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-primary text-primary-foreground rounded-tr-none'
-                      : 'bg-card border border-border/80 rounded-tl-none shadow-sm'
+                      ? 'bg-primary text-primary-foreground font-medium rounded-tr-none shadow-xs'
+                      : 'bg-secondary/40 border border-violet-500/20 text-foreground rounded-tl-none shadow-xs'
                   }`}
                 >
                   <p className="whitespace-pre-line">{msg.text}</p>
