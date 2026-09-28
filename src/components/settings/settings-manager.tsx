@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   User,
   Shield,
@@ -21,13 +23,27 @@ import {
   Download,
   FileJson,
   AlertOctagon,
+  Calendar,
+  Lock,
+  Mail,
+  UserPlus,
+  Loader2,
 } from 'lucide-react';
 import { useUser, useAuth, useFirestore } from '@/firebase';
-import { initiateAnonymousSignIn, initiateEmailSignIn, initiateEmailSignUp } from '@/firebase/non-blocking-login';
-import { signOut } from 'firebase/auth';
+import {
+  signUpWithEmail,
+  signInWithEmail,
+  changeUserPassword,
+  deleteUserAccount,
+  resetPassword,
+  logOut,
+  formatAuthError,
+  evaluatePasswordStrength,
+} from '@/firebase/auth/auth-service';
 import { seedUserDemoData, clearUserData } from '@/lib/finance/firestore-service';
 import { useToast } from '@/hooks/use-toast';
 import { useFinwiseData } from '@/hooks/use-finwise-data';
+import { useDemoMode } from '@/context/demo-mode-context';
 import { exportFullUserDataJSON, exportFinancialSnapshotJSON } from '@/lib/finance/export';
 import { logAuditEvent } from '@/lib/finance/audit-trail';
 import {
@@ -46,38 +62,124 @@ export function SettingsManager() {
   const firestore = useFirestore();
   const { toast } = useToast();
   const finwise = useFinwiseData();
+  const { isDemoMode, disableDemoMode } = useDemoMode();
 
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [resetModalOpen, setResetModalOpen] = useState(false);
-  const [confirmKeyword, setConfirmKeyword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
-  // Alert preferences toggles
+  // Security: Change Password
+  const [currentPass, setCurrentPass] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [confirmNewPass, setConfirmNewPass] = useState('');
+  const [passLoading, setPassLoading] = useState(false);
+  const [passError, setPassError] = useState<string | null>(null);
+  const [passSuccess, setPassSuccess] = useState<string | null>(null);
+
+  // Modals
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false);
+  const [confirmKeyword, setConfirmKeyword] = useState('');
+  const [confirmDeleteAccountKeyword, setConfirmDeleteAccountKeyword] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Alert preferences state
   const [alertPrefs, setAlertPrefs] = useState({
-    budgetExceeded: true,
+    budgetAlert: true,
     unusualSpending: true,
     upcomingEmi: true,
     recurringPayment: true,
+    weeklyDigest: false,
   });
+
+  const isAuthenticated = Boolean(user && !user.isAnonymous);
+  const newPassStrength = evaluatePasswordStrength(newPass);
+
+  const handleEmailAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auth || !email.trim() || !password) return;
+    setAuthError(null);
+
+    if (authMode === 'signup' && password !== confirmPassword) {
+      setAuthError('Passwords do not match.');
+      return;
+    }
+
+    try {
+      setAuthLoading(true);
+      if (authMode === 'signin') {
+        await signInWithEmail(auth, email, password);
+        toast({ title: 'Welcome back!', description: 'Authenticated successfully.' });
+      } else {
+        await signUpWithEmail(auth, email, password);
+        toast({ title: 'Account created!', description: 'Your secure profile is ready.' });
+      }
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      setAuthError(formatAuthError(err));
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    if (auth) {
+      await logOut(auth);
+      toast({ title: 'Signed Out', description: 'Switched to guest session.' });
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setPassError(null);
+    setPassSuccess(null);
+
+    if (newPass.length < 6) {
+      setPassError('New password must be at least 6 characters.');
+      return;
+    }
+    if (newPass !== confirmNewPass) {
+      setPassError('New passwords do not match.');
+      return;
+    }
+
+    try {
+      setPassLoading(true);
+      await changeUserPassword(user, newPass);
+      setPassSuccess('Password updated successfully.');
+      setNewPass('');
+      setConfirmNewPass('');
+      setCurrentPass('');
+      toast({ title: 'Password Changed', description: 'Your credentials have been updated.' });
+    } catch (err: any) {
+      setPassError(formatAuthError(err));
+    } finally {
+      setPassLoading(false);
+    }
+  };
 
   const handleExportFullData = () => {
     try {
       exportFullUserDataJSON({
-        userId: user?.uid || 'guest-session',
+        userId: user?.uid || 'guest',
         transactions: finwise.transactions,
         budgets: finwise.budgets,
         goals: finwise.goals,
         investments: finwise.investments,
         debts: finwise.debts,
-        subscriptions: [],
-        settings: { alertPreferences: alertPrefs },
+        alerts: finwise.alerts,
+        receipts: finwise.receipts,
       });
-      logAuditEvent('DATA_EXPORT', user?.uid || 'guest', 'portfolio', { format: 'JSON' });
+      logAuditEvent('DATA_EXPORT', user?.uid || 'guest', 'full_database', { format: 'JSON' });
       toast({
-        title: 'Data Exported Successfully',
-        description: 'Complete user financial records exported to structured JSON without credentials.',
+        title: 'Full Export Completed',
+        description: `Exported ${finwise.transactions.length} transactions, ${finwise.receipts.length} receipts, and complete ledger records.`,
       });
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Export Failed', description: err.message });
@@ -98,7 +200,7 @@ export function SettingsManager() {
           netWorth: finwise.totals.netWorth,
           totalInvested: finwise.totals.totalInvested,
           portfolioValue: finwise.totals.currentPortfolioValue,
-          totalDebtRemaining: finwise.totals.totalLiabilities,
+          totalDebtRemaining: finwise.totals.totalDebtRemaining,
         },
         healthScore: finwise.healthScore.overallScore,
         cashRunwayMonths: parseFloat((finwise.totals.totalBalance / expenses).toFixed(1)),
@@ -116,36 +218,9 @@ export function SettingsManager() {
     }
   };
 
-  const handleEmailAuth = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!auth || !email.trim() || !password.trim()) return;
-
-    if (authMode === 'signin') {
-      initiateEmailSignIn(auth, email, password);
-      toast({ title: 'Signing in...', description: 'Authenticating your credentials.' });
-    } else {
-      initiateEmailSignUp(auth, email, password);
-      toast({ title: 'Creating account...', description: 'Setting up your secure profile.' });
-    }
-  };
-
-  const handleGuestSignIn = () => {
-    if (auth) {
-      initiateAnonymousSignIn(auth);
-      toast({ title: 'Guest Session Active', description: 'Signed in anonymously for testing.' });
-    }
-  };
-
-  const handleSignOut = () => {
-    if (auth) {
-      signOut(auth);
-      toast({ title: 'Signed Out', description: 'Switched to guest mode.' });
-    }
-  };
-
   const handleSeedData = async () => {
     if (!user || !firestore) {
-      toast({ title: 'Sign in required', description: 'Start a guest session or log in to seed data.' });
+      toast({ title: 'Sign in required', description: 'Log in to seed sample data into your sandbox.' });
       return;
     }
     try {
@@ -166,13 +241,6 @@ export function SettingsManager() {
     }
     try {
       setIsProcessing(true);
-      logAuditEvent('DATA_RESET', user.uid, 'user_data', {
-        deletedTransactions: finwise.transactions.length,
-        deletedGoals: finwise.goals.length,
-        deletedBudgets: finwise.budgets.length,
-        deletedInvestments: finwise.investments.length,
-        deletedDebts: finwise.debts.length,
-      });
       await clearUserData(firestore, user.uid);
       setResetModalOpen(false);
       setConfirmKeyword('');
@@ -184,57 +252,95 @@ export function SettingsManager() {
     }
   };
 
+  const handleConfirmDeleteAccount = async () => {
+    if (!user) return;
+    try {
+      setIsProcessing(true);
+      await deleteUserAccount(user, firestore);
+      setDeleteAccountModalOpen(false);
+      setConfirmDeleteAccountKeyword('');
+      toast({ title: 'Account Deleted', description: 'All records and profile permanently erased.' });
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Delete Failed', description: formatAuthError(err) });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* User Profile & Authentication */}
-      <Card className="shadow-sm border border-border/70">
+      <Card className="shadow-sm border border-border/80">
         <CardHeader className="p-4 sm:p-6 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="size-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+              <div className="size-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                 <User className="size-4" />
               </div>
               <div>
                 <CardTitle className="text-base font-semibold">User Profile & Access</CardTitle>
                 <CardDescription className="text-xs">
-                  Manage your credentials, session mode, and cloud sync identity
+                  Manage your credentials, isolated cloud storage, and session identity
                 </CardDescription>
               </div>
             </div>
-            {user && (
-              <Badge variant="outline" className="text-xs text-accent border-accent/30">
-                {user.isAnonymous ? 'Guest / Demo Mode' : 'Verified Cloud User'}
+            {isAuthenticated ? (
+              <Badge variant="outline" className="text-xs text-emerald-400 border-emerald-500/30 font-mono">
+                Verified Cloud User
               </Badge>
-            )}
+            ) : isDemoMode ? (
+              <Badge variant="outline" className="text-xs text-amber-400 border-amber-500/30 font-mono">
+                DEMO SANDBOX
+              </Badge>
+            ) : null}
           </div>
         </CardHeader>
 
         <CardContent className="p-4 sm:p-6 space-y-4">
-          {user ? (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-muted/20 border">
+          {isAuthenticated ? (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-muted/20 border border-border/80">
               <div className="flex items-center gap-3">
-                <div className="size-10 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-accent font-bold">
-                  {user.email ? user.email.charAt(0).toUpperCase() : 'G'}
+                <div className="size-11 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                  {user?.displayName
+                    ? user.displayName.charAt(0).toUpperCase()
+                    : user?.email
+                    ? user.email.charAt(0).toUpperCase()
+                    : 'U'}
                 </div>
-                <div>
+                <div className="space-y-0.5">
                   <div className="font-semibold text-sm text-foreground">
-                    {user.email || 'Anonymous Guest Session'}
+                    {user?.displayName || user?.email}
                   </div>
-                  <div className="text-xs text-muted-foreground font-mono">UID: {user.uid}</div>
+                  <div className="text-xs text-muted-foreground font-mono truncate max-w-xs sm:max-w-md">
+                    UID: {user?.uid}
+                  </div>
+                  {user?.metadata?.creationTime && (
+                    <div className="text-[11px] text-muted-foreground flex items-center gap-1">
+                      <Calendar className="size-3" />
+                      Member since: {new Date(user.metadata.creationTime).toLocaleDateString()}
+                    </div>
+                  )}
                 </div>
               </div>
-              <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-1.5 h-8 text-xs">
+              <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-1.5 h-8 text-xs shrink-0">
                 <LogOut className="size-3.5" />
                 Sign Out
               </Button>
             </div>
           ) : (
             <div className="space-y-4">
+              {authError && (
+                <Alert variant="destructive" className="py-2.5 text-xs bg-destructive/10 border-destructive/30">
+                  <AlertCircle className="size-4 shrink-0" />
+                  <AlertDescription>{authError}</AlertDescription>
+                </Alert>
+              )}
+
               <div className="flex gap-2 border-b pb-3">
                 <Button
                   variant={authMode === 'signin' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setAuthMode('signin')}
+                  onClick={() => { setAuthMode('signin'); setAuthError(null); }}
                   className="h-8 text-xs"
                 >
                   Sign In
@@ -242,46 +348,54 @@ export function SettingsManager() {
                 <Button
                   variant={authMode === 'signup' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => setAuthMode('signup')}
+                  onClick={() => { setAuthMode('signup'); setAuthError(null); }}
                   className="h-8 text-xs"
                 >
                   Create Account
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleGuestSignIn}
-                  className="ml-auto h-8 text-xs gap-1.5 border-accent/40 text-accent"
-                >
-                  <Sparkles className="size-3.5" />
-                  Instant Guest Login
                 </Button>
               </div>
 
               <form onSubmit={handleEmailAuth} className="space-y-3 max-w-md">
                 <div className="space-y-1">
-                  <label className="text-xs font-medium">Email Address</label>
+                  <Label className="text-xs font-medium">Email Address</Label>
                   <Input
                     type="email"
                     placeholder="user@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="h-8 text-xs"
                     required
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-medium">Password</label>
+                  <Label className="text-xs font-medium">Password</Label>
                   <Input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="h-8 text-xs"
                     required
                   />
                 </div>
-                <Button type="submit" size="sm" className="h-8 text-xs gap-1.5">
-                  <LogIn className="size-3.5" />
-                  {authMode === 'signin' ? 'Sign In with Email' : 'Register Account'}
+
+                {authMode === 'signup' && (
+                  <div className="space-y-1">
+                    <Label className="text-xs font-medium">Confirm Password</Label>
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="h-8 text-xs"
+                      required
+                    />
+                  </div>
+                )}
+
+                <Button type="submit" size="sm" disabled={authLoading} className="h-8 text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-500">
+                  {authLoading ? <Loader2 className="size-3.5 animate-spin" /> : <LogIn className="size-3.5" />}
+                  {authMode === 'signin' ? 'Sign In' : 'Create Isolated Account'}
                 </Button>
               </form>
             </div>
@@ -289,11 +403,95 @@ export function SettingsManager() {
         </CardContent>
       </Card>
 
+      {/* Security & Password Change (Authenticated Users) */}
+      {isAuthenticated && (
+        <Card className="shadow-sm border border-border/80">
+          <CardHeader className="p-4 sm:p-6 border-b">
+            <div className="flex items-center gap-2.5">
+              <div className="size-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <KeyRound className="size-4" />
+              </div>
+              <div>
+                <CardTitle className="text-base font-semibold">Security & Password Management</CardTitle>
+                <CardDescription className="text-xs">
+                  Update your authentication credentials or request password resets
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6 space-y-4">
+            {passError && (
+              <Alert variant="destructive" className="py-2.5 text-xs bg-destructive/10 border-destructive/30">
+                <AlertCircle className="size-4 shrink-0" />
+                <AlertDescription>{passError}</AlertDescription>
+              </Alert>
+            )}
+
+            {passSuccess && (
+              <Alert className="py-2.5 text-xs bg-emerald-500/10 border-emerald-500/30 text-emerald-400">
+                <CheckCircle2 className="size-4 shrink-0" />
+                <AlertDescription>{passSuccess}</AlertDescription>
+              </Alert>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-3 max-w-md">
+              <div className="space-y-1">
+                <Label className="text-xs font-medium">New Password</Label>
+                <Input
+                  type="password"
+                  placeholder="At least 6 characters"
+                  value={newPass}
+                  onChange={(e) => setNewPass(e.target.value)}
+                  className="h-8 text-xs"
+                  required
+                />
+                {newPass.length > 0 && (
+                  <div className="pt-1 space-y-1">
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-muted-foreground">Strength:</span>
+                      <span className="font-semibold text-foreground">{newPassStrength.label}</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden flex gap-1">
+                      {[1, 2, 3, 4].map((step) => (
+                        <div
+                          key={step}
+                          className={`h-full flex-1 rounded-full transition-all duration-300 ${
+                            newPassStrength.score >= step ? newPassStrength.color : 'bg-muted/40'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-medium">Confirm New Password</Label>
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmNewPass}
+                  onChange={(e) => setConfirmNewPass(e.target.value)}
+                  className="h-8 text-xs"
+                  required
+                />
+              </div>
+
+              <Button type="submit" size="sm" disabled={passLoading} className="h-8 text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-500">
+                {passLoading ? <Loader2 className="size-3.5 animate-spin" /> : <Lock className="size-3.5" />}
+                Update Password
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Cloud Data Management & Portability */}
-      <Card className="shadow-sm border border-border/70">
+      <Card className="shadow-sm border border-border/80">
         <CardHeader className="p-4 sm:p-6 border-b">
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+            <div className="size-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Database className="size-4" />
             </div>
             <div>
@@ -307,10 +505,10 @@ export function SettingsManager() {
 
         <CardContent className="p-4 sm:p-6 space-y-5">
           {/* Data Portability (Export My Data) */}
-          <div className="p-4 rounded-xl border bg-muted/20 space-y-3">
+          <div className="p-4 rounded-xl border border-border/80 bg-muted/20 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FileJson className="size-4 text-accent" />
+                <FileJson className="size-4 text-emerald-400" />
                 <span className="font-semibold text-sm text-foreground">Export My Data (Data Portability)</span>
               </div>
               <Badge variant="outline" className="text-[10px] text-muted-foreground">
@@ -318,7 +516,7 @@ export function SettingsManager() {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Download your complete financial records (all transactions, active budgets, savings goals, stock holdings, debt schedules, and alert preferences) in deterministic, structured JSON. Strictly audited to exclude API keys and authorization secrets.
+              Download your complete financial records (transactions, receipts, active budgets, savings goals, stock holdings, debt schedules, and alert preferences) in deterministic, structured JSON. Strictly audited to exclude API keys and authorization secrets.
             </p>
             <div className="flex flex-wrap items-center gap-2.5 pt-1">
               <Button
@@ -344,139 +542,81 @@ export function SettingsManager() {
 
           {/* Seeder & Reset Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl border bg-accent/5 border-accent/20 space-y-2">
+            <div className="p-4 rounded-xl border bg-emerald-500/5 border-emerald-500/20 space-y-2">
               <span className="font-semibold text-sm text-foreground flex items-center gap-1.5">
-                <Sparkles className="size-4 text-accent" />
+                <Sparkles className="size-4 text-emerald-400" />
                 Seed Fintech Sample Data
               </span>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Instantly populate your account with 20+ realistic Indian Rupee transactions, budget caps, active goals, stocks, and loans.
+                Populate your private account with realistic Indian fintech records (Swiggy, D-Mart, HDFC loans, SIP investments) to explore advanced charts and simulation models.
               </p>
               <Button
+                variant="outline"
                 size="sm"
                 onClick={handleSeedData}
                 disabled={isProcessing}
-                className="h-8 text-xs gap-1.5 mt-2"
+                className="h-8 text-xs border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 gap-1.5"
               >
                 <Database className="size-3.5" />
-                {isProcessing ? 'Writing to Firestore...' : 'Load Complete Sample Data'}
+                {isProcessing ? 'Writing to Firestore...' : 'Seed Sample Records'}
               </Button>
             </div>
 
-            <div className="p-4 rounded-xl border bg-destructive/5 border-destructive/20 space-y-2">
+            <div className="p-4 rounded-xl border border-destructive/30 bg-destructive/5 space-y-2">
               <span className="font-semibold text-sm text-destructive flex items-center gap-1.5">
-                <Trash2 className="size-4" />
-                Reset Account Data
+                <AlertOctagon className="size-4" />
+                Clear Financial Records
               </span>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Permanently purge all user-scoped transactions, budgets, goals, investments, and debt schedules from Firestore.
+                Permanently delete all transactions, budgets, goals, and portfolio records from your Firestore profile. Irreversible action.
               </p>
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => {
-                  setConfirmKeyword('');
-                  setResetModalOpen(true);
-                }}
-                disabled={isProcessing}
-                className="h-8 text-xs gap-1.5 mt-2"
+                onClick={() => setResetModalOpen(true)}
+                className="h-8 text-xs gap-1.5"
               >
                 <Trash2 className="size-3.5" />
-                Reset Records...
+                Wipe All Ledger Data
               </Button>
             </div>
           </div>
+
+          {/* Delete Account Permanently (Phase 12) */}
+          {isAuthenticated && (
+            <div className="p-4 rounded-xl border border-destructive/40 bg-destructive/10 space-y-2">
+              <span className="font-semibold text-sm text-destructive flex items-center gap-1.5">
+                <AlertOctagon className="size-4" />
+                Delete Account Permanently
+              </span>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Delete your entire FinWise AI profile and user document. All data in Firestore across all subcollections will be cascaded and purged forever.
+              </p>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setDeleteAccountModalOpen(true)}
+                className="h-8 text-xs gap-1.5"
+              >
+                <Trash2 className="size-3.5" />
+                Delete My Account Permanently
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Explicit Guarded Reset Records Confirmation Dialog */}
-      <Dialog open={resetModalOpen} onOpenChange={setResetModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <div className="flex items-center gap-2 text-destructive mb-1">
-              <AlertOctagon className="size-5 shrink-0" />
-              <DialogTitle className="text-base font-bold">Confirm Account Data Reset</DialogTitle>
-            </div>
-            <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-              This action is <span className="font-semibold text-destructive">irreversible</span>. All records associated with your UID will be permanently purged from private cloud Firestore collections.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-3 py-2 text-xs">
-            <div className="bg-muted/40 p-3 rounded-lg border space-y-1.5">
-              <div className="font-semibold text-foreground text-xs mb-1">Records to be deleted:</div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Transactions:</span>
-                <span className="font-mono font-medium text-foreground">{finwise.transactions.length}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Active Budgets:</span>
-                <span className="font-mono font-medium text-foreground">{finwise.budgets.length}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Financial Goals:</span>
-                <span className="font-mono font-medium text-foreground">{finwise.goals.length}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Investment Holdings:</span>
-                <span className="font-mono font-medium text-foreground">{finwise.investments.length}</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Debts & Loans:</span>
-                <span className="font-mono font-medium text-foreground">{finwise.debts.length}</span>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-[11px] font-medium text-muted-foreground">
-                Type <span className="font-mono font-bold text-destructive">RESET</span> below to confirm deletion:
-              </label>
-              <Input
-                value={confirmKeyword}
-                onChange={(e) => setConfirmKeyword(e.target.value)}
-                placeholder="RESET"
-                className="font-mono text-xs uppercase"
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="flex gap-2 sm:justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setResetModalOpen(false)}
-              className="text-xs h-8"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleConfirmClearData}
-              disabled={confirmKeyword.trim() !== 'RESET' || isProcessing}
-              className="text-xs h-8 gap-1.5"
-            >
-              <Trash2 className="size-3.5" />
-              {isProcessing ? 'Purging...' : 'Permanently Delete Records'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Connected Bank Accounts & Account Aggregator */}
-      <ConnectedAccountsManager />
-
-      {/* Smart Alerts & Notifications Toggles (Phase 12) */}
-      <Card className="shadow-sm border border-border/70">
+      {/* Smart Notification & Alert Settings */}
+      <Card className="shadow-sm border border-border/80">
         <CardHeader className="p-4 sm:p-6 border-b">
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+            <div className="size-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Bell className="size-4" />
             </div>
             <div>
-              <CardTitle className="text-base font-semibold">Intelligent Alert Categories</CardTitle>
+              <CardTitle className="text-base font-semibold">Notification Rules & Thresholds</CardTitle>
               <CardDescription className="text-xs">
-                Configure rule-based monitoring triggers for your cash flow
+                Configure rule-based alerts for overspending, upcoming EMIs, and monthly budget limits
               </CardDescription>
             </div>
           </div>
@@ -486,12 +626,12 @@ export function SettingsManager() {
           <div className="divide-y divide-border/60">
             <div className="flex items-center justify-between py-3">
               <div>
-                <span className="text-xs font-semibold text-foreground block">Budget Threshold Warnings</span>
-                <span className="text-[11px] text-muted-foreground">Alert when category spending exceeds 80%</span>
+                <span className="text-xs font-semibold text-foreground block">Budget Velocity Alerts</span>
+                <span className="text-[11px] text-muted-foreground">Trigger warnings when category spending crosses 80% threshold</span>
               </div>
               <Switch
-                checked={alertPrefs.budgetExceeded}
-                onCheckedChange={(c) => setAlertPrefs({ ...alertPrefs, budgetExceeded: c })}
+                checked={alertPrefs.budgetAlert}
+                onCheckedChange={(c) => setAlertPrefs({ ...alertPrefs, budgetAlert: c })}
               />
             </div>
 
@@ -531,26 +671,89 @@ export function SettingsManager() {
         </CardContent>
       </Card>
 
-      {/* Security & Regulatory Disclaimers (Phase 17) */}
-      <Card className="shadow-sm border border-border/70 bg-card/60">
-        <CardHeader className="p-4 pb-2">
-          <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Shield className="size-3.5 text-accent" />
-            Security & Regulatory Compliance
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 pt-1 space-y-2 text-xs text-muted-foreground leading-relaxed">
-          <p>
-            • <span className="font-semibold text-foreground">Strict Document Ownership:</span> All user transactions, budgets, investments, and debts are segregated under private Firestore user paths (<code className="text-[10px] bg-muted px-1 py-0.5 rounded">/users/&#123;userId&#125;/*</code>) guarded by rules checking <code className="text-[10px] bg-muted px-1 py-0.5 rounded">request.auth.uid == userId</code>.
-          </p>
-          <p>
-            • <span className="font-semibold text-foreground">No Hardcoded Secret Keys:</span> All AI server actions run server-side using server environment variables.
-          </p>
-          <p>
-            • <span className="font-semibold text-foreground">Educational Disclaimer:</span> FinWise AI is designed as a personal finance copilot for educational and informational tracking only. It does not provide certified financial planning, tax advice, or registered SEBI advisory services.
-          </p>
-        </CardContent>
-      </Card>
+      {/* Modal: Wipe Ledger Data */}
+      <Dialog open={resetModalOpen} onOpenChange={setResetModalOpen}>
+        <DialogContent className="max-w-md p-5 bg-card border-border/80">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center gap-2 text-base">
+              <AlertOctagon className="size-4" />
+              Confirm Database Reset
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              This will permanently delete all {finwise.transactions.length} transactions, {finwise.receipts.length} receipts, budgets, and investments.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 py-2">
+            <p className="text-xs text-muted-foreground">
+              Please type <code className="font-mono font-bold text-foreground bg-muted px-1.5 py-0.5 rounded">RESET-DATA</code> to confirm:
+            </p>
+            <Input
+              value={confirmKeyword}
+              onChange={(e) => setConfirmKeyword(e.target.value)}
+              placeholder="RESET-DATA"
+              className="h-8 text-xs font-mono"
+            />
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" size="sm" onClick={() => setResetModalOpen(false)} className="h-8 text-xs">
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={confirmKeyword !== 'RESET-DATA' || isProcessing}
+              onClick={handleConfirmClearData}
+              className="h-8 text-xs gap-1.5"
+            >
+              {isProcessing ? 'Purging records...' : 'Permanently Delete Records'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal: Delete Account Permanently (Phase 12) */}
+      <Dialog open={deleteAccountModalOpen} onOpenChange={setDeleteAccountModalOpen}>
+        <DialogContent className="max-w-md p-5 bg-card border-border/80">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center gap-2 text-base">
+              <AlertOctagon className="size-4" />
+              Delete Account Permanently
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              All user records across all collections will be permanently deleted and your login credentials will be removed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 py-2">
+            <p className="text-xs text-muted-foreground">
+              Please type <code className="font-mono font-bold text-foreground bg-muted px-1.5 py-0.5 rounded">Delete my account permanently</code> to confirm:
+            </p>
+            <Input
+              value={confirmDeleteAccountKeyword}
+              onChange={(e) => setConfirmDeleteAccountKeyword(e.target.value)}
+              placeholder="Delete my account permanently"
+              className="h-8 text-xs"
+            />
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" size="sm" onClick={() => setDeleteAccountModalOpen(false)} className="h-8 text-xs">
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={confirmDeleteAccountKeyword !== 'Delete my account permanently' || isProcessing}
+              onClick={handleConfirmDeleteAccount}
+              className="h-8 text-xs gap-1.5"
+            >
+              {isProcessing ? 'Deleting account...' : 'Delete My Account'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

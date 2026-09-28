@@ -17,6 +17,7 @@ import {
   DebtItem,
   SmartAlert,
   MonthlyReport,
+  ReceiptRecord,
 } from '@/lib/types/finance';
 import {
   DEMO_TRANSACTIONS,
@@ -42,6 +43,12 @@ export const collections = {
     collection(firestore, 'users', userId, 'alerts'),
   reports: (firestore: Firestore, userId: string) =>
     collection(firestore, 'users', userId, 'reports'),
+  receipts: (firestore: Firestore, userId: string) =>
+    collection(firestore, 'users', userId, 'receipts'),
+  subscriptions: (firestore: Firestore, userId: string) =>
+    collection(firestore, 'users', userId, 'subscriptions'),
+  audit: (firestore: Firestore, userId: string) =>
+    collection(firestore, 'users', userId, 'audit'),
   settings: (firestore: Firestore, userId: string) =>
     collection(firestore, 'users', userId, 'settings'),
 };
@@ -293,3 +300,78 @@ export async function saveMonthlyReport(
     userId,
   });
 }
+
+/**
+ * Receipt helpers
+ */
+export async function addReceipt(
+  firestore: Firestore,
+  userId: string,
+  receipt: Omit<ReceiptRecord, 'id' | 'userId' | 'createdAt'>
+) {
+  return addDoc(collections.receipts(firestore, userId), {
+    ...receipt,
+    userId,
+    createdAt: new Date().toISOString(),
+  });
+}
+
+export async function updateReceipt(
+  firestore: Firestore,
+  userId: string,
+  receiptId: string,
+  updates: Partial<ReceiptRecord>
+) {
+  return updateDoc(doc(firestore, 'users', userId, 'receipts', receiptId), updates);
+}
+
+export async function deleteReceipt(
+  firestore: Firestore,
+  userId: string,
+  receiptId: string
+) {
+  return deleteDoc(doc(firestore, 'users', userId, 'receipts', receiptId));
+}
+
+/**
+ * Permanently delete all user financial data across all subcollections (Account Deletion)
+ */
+export async function deleteUserAllData(firestore: Firestore, userId: string): Promise<void> {
+  const subcollectionKeys: Array<keyof typeof collections> = [
+    'transactions',
+    'budgets',
+    'goals',
+    'investments',
+    'debts',
+    'alerts',
+    'reports',
+    'receipts',
+    'subscriptions',
+    'audit',
+    'settings',
+  ];
+
+  for (const key of subcollectionKeys) {
+    try {
+      const colRef = collections[key](firestore, userId);
+      const snapshot = await getDocs(colRef);
+      if (!snapshot.empty) {
+        const batch = writeBatch(firestore);
+        snapshot.docs.forEach((docSnap) => {
+          batch.delete(docSnap.ref);
+        });
+        await batch.commit();
+      }
+    } catch (err) {
+      console.warn(`Failed to clean subcollection ${key} for user ${userId}:`, err);
+    }
+  }
+
+  // Delete the top-level user document if it exists
+  try {
+    await deleteDoc(doc(firestore, 'users', userId));
+  } catch (err) {
+    console.warn(`Failed to delete user doc for ${userId}:`, err);
+  }
+}
+

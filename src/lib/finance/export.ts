@@ -134,6 +134,8 @@ export function exportFullUserDataJSON(
     goals: FinancialGoal[];
     investments: Investment[];
     debts: unknown[];
+    receipts?: unknown[];
+    alerts?: unknown[];
     subscriptions?: unknown[];
     reports?: unknown[];
     settings?: Record<string, unknown>;

@@ -41,7 +41,6 @@ import {
   Area,
 } from 'recharts';
 import { useFinwiseData } from '@/hooks/use-finwise-data';
-import { yearlyExpenses } from '@/lib/placeholder-data';
 
 const PIE_COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#14B8A6', '#6366F1', '#F59E0B', '#64748B'];
 

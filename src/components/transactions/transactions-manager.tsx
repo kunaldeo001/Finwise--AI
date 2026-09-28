@@ -558,7 +558,10 @@ export function TransactionsManager() {
             </DialogDescription>
           </DialogHeader>
           <div className="pt-2">
-            <ScanBill />
+            <ScanBill
+              onSuccess={() => setIsScanOpen(false)}
+              onCancel={() => setIsScanOpen(false)}
+            />
           </div>
         </DialogContent>
       </Dialog>

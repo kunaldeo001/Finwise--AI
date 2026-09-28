@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
   Receipt,
+  ScanLine,
   Wallet,
   Target,
   TrendingUp,
@@ -30,6 +31,7 @@ type SidebarNavItem = {
 const menuItems: SidebarNavItem[] = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/transactions', label: 'Transactions', icon: Receipt },
+  { href: '/receipts', label: 'Receipt Scanner', icon: ScanLine, badge: 'AI' },
   { href: '/budgets', label: 'Budgets', icon: Wallet },
   { href: '/goals', label: 'Goals', icon: Target },
   { href: '/investments', label: 'Investments', icon: TrendingUp },

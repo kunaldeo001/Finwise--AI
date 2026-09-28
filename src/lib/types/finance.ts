@@ -29,7 +29,7 @@ export interface Transaction {
   description?: string;
   isRecurring?: boolean;
   recurringFrequency?: 'weekly' | 'monthly' | 'yearly';
-  paymentMethod?: 'UPI' | 'Credit Card' | 'Debit Card' | 'Net Banking' | 'Cash';
+  paymentMethod?: 'UPI' | 'Credit Card' | 'Debit Card' | 'Net Banking' | 'Cash' | 'Other';
   taxAmount?: number;
   isAnomaly?: boolean;
   createdAt: string;
@@ -272,3 +272,36 @@ export interface UserFinancialSnapshot {
     liabilityDistribution: Record<string, number>;
   };
 }
+
+export type ReceiptProcessingStatus = 'PROCESSING' | 'PROCESSED' | 'NEEDS_REVIEW' | 'FAILED';
+
+export interface ExtractedReceiptItem {
+  name: string;
+  quantity?: number;
+  unitPrice?: number;
+  total: number;
+}
+
+export interface ReceiptRecord {
+  id: string;
+  userId: string;
+  merchant: string;
+  transactionDate: string; // YYYY-MM-DD
+  totalAmount: number;
+  subtotal?: number;
+  tax?: number;
+  tip?: number;
+  currency: string;
+  paymentMethod: 'UPI' | 'Credit Card' | 'Debit Card' | 'Net Banking' | 'Cash' | 'Other';
+  category: string;
+  items: ExtractedReceiptItem[];
+  receiptNumber?: string;
+  confidence: number; // 0-100
+  rawText?: string;
+  imageUrl?: string;
+  status: ReceiptProcessingStatus;
+  linkedTransactionId?: string;
+  notes?: string;
+  createdAt: string;
+}
+

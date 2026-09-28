@@ -128,6 +128,35 @@ service cloud.firestore {
       }
 
       /**
+       * Receipts and scanned documents
+       */
+      match /receipts/{receiptId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * Subscriptions collection
+       */
+      match /subscriptions/{subscriptionId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * Audit logs collection
+       */
+      match /audit/{auditId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update, delete: if false; // Audit records are append-only
+      }
+
+      /**
        * User settings and preferences
        */
       match /settings/{settingId} {
