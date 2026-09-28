@@ -117,4 +117,38 @@ describe('Production Authentication & Security Tests', () => {
       });
     });
   });
+
+  describe('Production Runtime Resilience & Fallback Tests', () => {
+    it('verifies firebaseConfig provides all required fields without crashing', async () => {
+      const { firebaseConfig } = await import('@/firebase/config');
+      expect(firebaseConfig.projectId).toBeTruthy();
+      expect(firebaseConfig.appId).toBeTruthy();
+      expect(firebaseConfig.apiKey).toBeTruthy();
+      expect(firebaseConfig.authDomain).toBeTruthy();
+      expect(firebaseConfig.messagingSenderId).toBeTruthy();
+    });
+
+    it('emits permission-error on errorEmitter without throwing unhandled exceptions', async () => {
+      const { errorEmitter } = await import('@/firebase/error-emitter');
+      const { FirestorePermissionError } = await import('@/firebase/errors');
+
+      let receivedError: any = null;
+      const listener = (err: any) => {
+        receivedError = err;
+      };
+      errorEmitter.on('permission-error', listener);
+
+      const testError = new FirestorePermissionError({
+        operation: 'list',
+        path: '/databases/(default)/documents/users/test-uid/goals',
+      });
+
+      expect(() => {
+        errorEmitter.emit('permission-error', testError);
+      }).not.toThrow();
+
+      expect(receivedError).toBe(testError);
+      errorEmitter.off('permission-error', listener);
+    });
+  });
 });

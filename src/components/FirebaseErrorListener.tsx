@@ -13,27 +13,19 @@ export function FirebaseErrorListener() {
   const [error, setError] = useState<FirestorePermissionError | null>(null);
 
   useEffect(() => {
-    // The callback now expects a strongly-typed error, matching the event payload.
     const handleError = (error: FirestorePermissionError) => {
-      // Set error in state to trigger a re-render.
+      console.warn('[Firestore] Permission notice:', error?.message || error);
       setError(error);
     };
 
-    // The typed emitter will enforce that the callback for 'permission-error'
-    // matches the expected payload type (FirestorePermissionError).
     errorEmitter.on('permission-error', handleError);
 
-    // Unsubscribe on unmount to prevent memory leaks.
     return () => {
       errorEmitter.off('permission-error', handleError);
     };
   }, []);
 
-  // On re-render, if an error exists in state, throw it.
-  if (error) {
-    throw error;
-  }
-
-  // This component renders nothing.
+  // Safe handler: Do not throw during render! Throwing unhandled errors inside the root layout
+  // destroys the client component tree and triggers Next.js's "Application error" white screen crash.
   return null;
 }
